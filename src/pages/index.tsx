@@ -1,8 +1,15 @@
 import Head from "next/head";
+import Link from "next/link";
+import Header from "~/components/header";
 import { api } from "~/utils/api";
 
 export default function Home() {
-  const { data, isLoading } = api.notion.getPages.useQuery();
+  const { data: contentData, isLoading: contentLoading } =
+    api.notion.getContentPages.useQuery();
+  const { data: organizationData, isLoading: organizationLoading } =
+    api.notion.getOrganizationPages.useQuery();
+  const { data: utilitiesData, isLoading: utilitiesLoading } =
+    api.notion.getUtilitiesPages.useQuery();
 
   return (
     <>
@@ -11,37 +18,123 @@ export default function Home() {
         <meta name="description" content="View your Notion pages" />
       </Head>
       <main className="min-h-screen bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-          <header className="mb-12 border-b border-gray-100 pb-8">
-            <h1 className="mb-2 font-serif text-4xl font-light tracking-tight text-gray-900 sm:text-5xl">
-              Notion Pages
-            </h1>
-            <p className="text-lg text-gray-600">
-              A minimalist view of your workspace
-            </p>
-          </header>
+        <div className="mx-auto max-w-6xl px-4 pb-16 pt-12 sm:px-6 lg:px-8">
+          <Header />
 
-          {isLoading ? (
-            <div className="flex items-center justify-center py-20">
+          <blockquote className="mx-auto mt-2 text-gray-600">
+            Oiie! Meu nome é Rafaela Castan e aqui disponibilizo meus resumos,
+            desenhos, apostilas e outros arquivos que fiz ou reuni ao longo dos
+            meus estudos na PUCPR!
+          </blockquote>
+
+          <div className="mb-4 mt-8 flex justify-between">
+            <h2 className="text-xl font-medium text-gray-900">
+              Resumos{" "}
+              {contentData && contentData.length > 0 && (
+                <span className="text-sm text-gray-500">
+                  ({contentData.length})
+                </span>
+              )}
+            </h2>
+            <Link
+              href={
+                "https://www.notion.so/Ciclo-B-sico-Medicina-143fbe83ff3b80b29b8fd9d48281cfe6"
+              }
+              className="text-sm text-gray-500 transition-all duration-200 hover:text-gray-700"
+            >
+              Ver todos
+            </Link>
+          </div>
+          {contentLoading ? (
+            <div className="flex items-center justify-center pb-16 pt-12">
               <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-gray-900"></div>
             </div>
-          ) : data?.length === 0 ? (
+          ) : contentData?.length === 0 ? (
             <div className="rounded-lg bg-gray-50 p-12 text-center">
-              <p className="text-lg text-gray-600">
-                No Notion pages found in your workspace.
-              </p>
+              <p className="text-lg text-gray-600">Nenhum resumo encontrado.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {data?.map((page) => (
-                <div
+              {contentData?.map((page) => (
+                <Link
                   key={page.id}
-                  className="group flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:shadow-md"
+                  href={page.publicUrl ?? ""}
+                  target="_blank"
+                  className="group flex items-center gap-2 overflow-hidden rounded-xl border border-gray-200 bg-white px-6 py-4 transition-all duration-200 hover:shadow-sm"
                 >
-                  <div className="flex items-center gap-3 border-b border-gray-100 p-4">
-                    {page}
-                  </div>
-                </div>
+                  <div>{page.icon}</div>
+                  <div>{page.title}</div>
+                </Link>
+              ))}
+            </div>
+          )}
+
+          <div className="mb-4 mt-12 flex justify-between">
+            <h2 className="text-xl font-medium text-gray-900">Organização</h2>
+            <Link
+              href={
+                "https://www.notion.so/Ciclo-B-sico-Organiza-o-1a9fbe83ff3b80b69737e9a23bc91ec6"
+              }
+              className="text-sm text-gray-500 transition-all duration-200 hover:text-gray-700"
+            >
+              Ver todos
+            </Link>
+          </div>
+          {organizationLoading ? (
+            <div className="flex items-center justify-center pb-16 pt-12">
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-gray-900"></div>
+            </div>
+          ) : organizationData?.length === 0 ? (
+            <div className="rounded-lg bg-gray-50 p-12 text-center">
+              <p className="text-lg text-gray-600">Nenhum resumo encontrado.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {organizationData?.map((page) => (
+                <Link
+                  key={page.id}
+                  href={page.publicUrl ?? ""}
+                  target="_blank"
+                  className="group flex items-center gap-2 overflow-hidden rounded-xl border border-gray-200 bg-white px-6 py-4 transition-all duration-200 hover:shadow-sm"
+                >
+                  <div>{page.icon}</div>
+                  <div>{page.title}</div>
+                </Link>
+              ))}
+            </div>
+          )}
+
+          <div className="mb-4 mt-12 flex justify-between">
+            <h2 className="text-xl font-medium text-gray-900">Utilidades</h2>
+            <Link
+              href={
+                "https://www.notion.so/Ciclo-B-sico-Utilidades-1a9fbe83ff3b80fbad6cd6ba67cc1cf5"
+              }
+              className="text-sm text-gray-500 transition-all duration-200 hover:text-gray-700"
+            >
+              Ver todos
+            </Link>
+          </div>
+          {utilitiesLoading ? (
+            <div className="flex items-center justify-center pb-16 pt-12">
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-gray-900"></div>
+            </div>
+          ) : utilitiesData?.length === 0 ? (
+            <div className="rounded-lg bg-gray-50 p-12 text-center">
+              <p className="text-lg text-gray-600">Nenhum resumo encontrado.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {utilitiesData?.map((page) => (
+                <Link
+                  key={page.id}
+                  href={page.publicUrl ?? ""}
+                  target="_blank"
+                  className="group flex items-center gap-2 overflow-hidden rounded-xl border border-gray-200 bg-white px-6 py-4 transition-all duration-200 hover:shadow-sm"
+                >
+                  <div>{page.icon}</div>
+                  <div>{page.title}</div>
+                </Link>
               ))}
             </div>
           )}

@@ -1,7 +1,18 @@
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { getNotionPages } from "~/utils/notion";
+import {
+  getContentPages,
+  getOrganizationPages,
+  getUtilitiesPages,
+} from "~/utils/notion";
+
 export const notionRouter = createTRPCRouter({
-  getPages: publicProcedure.query(async () => {
-    return await getNotionPages();
+  getContentPages: publicProcedure.query(async () => {
+    return await getContentPages();
+  }),
+  getOrganizationPages: publicProcedure.query(async () => {
+    return await getOrganizationPages();
+  }),
+  getUtilitiesPages: publicProcedure.query(async () => {
+    return await getUtilitiesPages();
   }),
 });
