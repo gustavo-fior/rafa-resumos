@@ -1,7 +1,9 @@
-import Head from "next/head";
+import Image from "next/image";
 import Link from "next/link";
+import Footer from "~/components/footer";
 import Header from "~/components/header";
 import { api } from "~/utils/api";
+import { type PageDetails } from "~/utils/notion";
 
 export default function Home() {
   const { data: contentData, isLoading: contentLoading } =
@@ -13,10 +15,6 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>Notion Pages</title>
-        <meta name="description" content="View your Notion pages" />
-      </Head>
       <main className="min-h-screen bg-white">
         <div className="mx-auto max-w-6xl px-4 pb-16 pt-12 sm:px-6 lg:px-8">
           <Header />
@@ -55,17 +53,7 @@ export default function Home() {
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {contentData?.map((page) => (
-                <Link
-                  key={page.id}
-                  href={page.publicUrl ?? ""}
-                  target="_blank"
-                  className="group flex items-center gap-2 overflow-hidden rounded-xl border border-gray-200 bg-white px-6 py-4 transition-all duration-200 hover:shadow-sm"
-                >
-                  <div>{page.icon}</div>
-                  <div>{page.title}</div>
-                </Link>
-              ))}
+              {contentData?.map((page) => <Page key={page.id} page={page} />)}
             </div>
           )}
 
@@ -91,16 +79,15 @@ export default function Home() {
           ) : (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {organizationData?.map((page) => (
-                <Link
-                  key={page.id}
-                  href={page.publicUrl ?? ""}
-                  target="_blank"
-                  className="group flex items-center gap-2 overflow-hidden rounded-xl border border-gray-200 bg-white px-6 py-4 transition-all duration-200 hover:shadow-sm"
-                >
-                  <div>{page.icon}</div>
-                  <div>{page.title}</div>
-                </Link>
+                <Page key={page.id} page={page} />
               ))}
+              <Page page={{
+                id: "vayo",
+                title: "VAYØ (guardador de links)",
+                icon: "🔗",
+                iconUrl: "",
+                publicUrl: "https://vayo.cc",
+              }} />
             </div>
           )}
 
@@ -125,21 +112,36 @@ export default function Home() {
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {utilitiesData?.map((page) => (
-                <Link
-                  key={page.id}
-                  href={page.publicUrl ?? ""}
-                  target="_blank"
-                  className="group flex items-center gap-2 overflow-hidden rounded-xl border border-gray-200 bg-white px-6 py-4 transition-all duration-200 hover:shadow-sm"
-                >
-                  <div>{page.icon}</div>
-                  <div>{page.title}</div>
-                </Link>
-              ))}
+              {utilitiesData?.map((page) => <Page key={page.id} page={page} />)}
             </div>
           )}
         </div>
       </main>
+      <Footer />
     </>
   );
 }
+
+const Page = ({ page }: { page: PageDetails }) => {
+  return (
+    <Link
+      key={page.id}
+      href={page.publicUrl ?? ""}
+      target="_blank"
+      className="page-card group flex items-center gap-2.5 overflow-hidden rounded-xl border border-gray-200 bg-white px-6 py-4 transition-all duration-200 hover:shadow-sm"
+    >
+      {page.icon ? (
+        <div>{page.icon}</div>
+      ) : page.iconUrl ? (
+        <Image
+          src={page.iconUrl ?? ""}
+          alt={page.title}
+          width={16}
+          height={16}
+          priority
+        />
+      ) : null}
+      <div>{page.title}</div>
+    </Link>
+  );
+};

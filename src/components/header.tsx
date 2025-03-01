@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { InstagramLogoIcon } from "@radix-ui/react-icons";
 
 export default function Header() {
   return (
@@ -13,12 +14,24 @@ export default function Header() {
           Resumos
         </h1>
       </Link>
-      <div className="mx-auto mt-3 flex flex-col items-center gap-4 md:mx-0 md:mt-0 sm:flex-row">
-        <Link href={"/about"}>
-          <button className="flex items-center gap-2 whitespace-pre rounded-xl border border-neutral-200 px-4 py-2 text-sm font-medium transition-all duration-200 hover:bg-neutral-50">
-            🙋🏻‍♀️ Sobre o Projeto
-          </button>
-        </Link>
+      <div className="mx-auto mt-3 flex flex-col items-center gap-4 sm:flex-row md:mx-0 md:mt-0">
+        <div className="flex items-center gap-4">
+          <Link href={"https://www.instagram.com/rafa_epc_"} target="_blank">
+            <button className="flex items-center gap-2 whitespace-pre rounded-xl border border-neutral-200 px-3 py-2.5 text-sm font-medium transition-all duration-200 hover:bg-neutral-50">
+              <InstagramLogoIcon className="size-4" />
+            </button>
+          </Link>
+          <Link href={"https://vsco.co/rafa-epc/gallery"} target="_blank">
+            <button className="flex items-center gap-2 whitespace-pre rounded-xl border border-neutral-200 px-3 py-2.5 text-sm font-medium transition-all duration-200 hover:bg-neutral-50">
+              <Image src="/vsco.png" alt="Vsco" width={16} height={16} />
+            </button>
+          </Link>
+          <Link href={"/about"}>
+            <button className="flex items-center gap-2 whitespace-pre rounded-xl border border-neutral-200 px-4 py-2 text-sm font-medium transition-all duration-200 hover:bg-neutral-50">
+              🙋🏻‍♀️{"  "}Sobre
+            </button>
+          </Link>
+        </div>
         <Link
           href={
             "https://drive.google.com/drive/folders/17yriQHi32y4_LKSfXly1e8sNMK55UIqv?usp=sharing"

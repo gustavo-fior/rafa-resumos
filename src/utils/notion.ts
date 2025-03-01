@@ -4,13 +4,14 @@ import { env } from "~/env";
 
 const notion = new Client({
   auth: env.NOTION_API_KEY,
-  logLevel: LogLevel.DEBUG,
+  logLevel: LogLevel.INFO,
 });
 
-interface PageDetails {
+export interface PageDetails {
   id: string;
   title: string;
   icon: string | null;
+  iconUrl: string | null;
   publicUrl: string | null;
 }
 
@@ -20,12 +21,16 @@ interface NotionPageResponse {
   icon?: {
     type: string;
     emoji?: string;
+    file?: {
+      url: string;
+    };
   } | null;
   public_url?: string | null;
 }
 
 export async function getContentPages(): Promise<PageDetails[]> {
   const pages = await getNotionPages("143fbe83ff3b80b29b8fd9d48281cfe6");
+
   return pages;
 }
 
@@ -81,6 +86,12 @@ export async function getNotionPages(id: string): Promise<PageDetails[]> {
           icon = pageDetails.icon.emoji;
         }
 
+        let iconUrl: string | null = null;
+
+        if (pageDetails.icon && pageDetails.icon.type === "file") {
+          iconUrl = pageDetails.icon.file?.url ?? null;
+        }
+
         // Get the publicUrl from the page details
         const publicUrl = pageDetails.public_url ?? null;
 
@@ -89,6 +100,7 @@ export async function getNotionPages(id: string): Promise<PageDetails[]> {
           title,
           icon,
           publicUrl,
+          iconUrl,
         };
       }),
     );
@@ -154,6 +166,7 @@ async function getNotionDatabases(id: string): Promise<PageDetails[]> {
           title,
           icon,
           publicUrl: databaseDetails.public_url ?? null,
+          iconUrl: null,
         };
       }),
     );
