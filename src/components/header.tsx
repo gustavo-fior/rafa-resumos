@@ -15,19 +15,20 @@ export default function Header() {
       </Link>
       <div className="mx-auto mt-3 flex flex-col items-center gap-3 sm:flex-row md:mx-0 md:mt-0">
         <div className="flex items-center gap-4">
-          <Link href={"/donate"}>
-            <button className="flex items-center gap-2 whitespace-pre rounded-xl border border-neutral-200 px-4 py-3 text-sm font-medium transition-all duration-200 hover:bg-neutral-50">
-              👍{"  "}Contribua
-            </button>
-          </Link>
-        </div>
-        <div className="flex items-center gap-4">
           <Link href={"/about"}>
             <button className="flex items-center gap-2 whitespace-pre rounded-xl border border-neutral-200 px-4 py-3 text-sm font-medium transition-all duration-200 hover:bg-neutral-50">
               🙋🏻‍♀️{"  "}Sobre
             </button>
           </Link>
         </div>
+        <div className="flex items-center gap-4">
+          <Link href={"/donate"}>
+            <button className="flex items-center gap-2 whitespace-pre rounded-xl border border-neutral-200 px-4 py-3 text-sm font-medium transition-all duration-200 hover:bg-neutral-50">
+              👍{"  "}Contribua
+            </button>
+          </Link>
+        </div>
+
         <Link
           href={
             "https://drive.google.com/drive/folders/17yriQHi32y4_LKSfXly1e8sNMK55UIqv?usp=sharing"
