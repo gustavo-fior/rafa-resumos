@@ -38,7 +38,7 @@ export default function Home() {
               href={
                 "https://www.notion.so/Ciclo-B-sico-Medicina-143fbe83ff3b80b29b8fd9d48281cfe6"
               }
-              className="text-sm text-gray-500 transition-all duration-200 hover:text-gray-700"
+              className="text-sm text-gray-500 transition-all duration-200 hover:text-gray-700 hover:underline"
             >
               Ver todos
             </Link>

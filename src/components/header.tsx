@@ -1,10 +1,9 @@
-import Link from "next/link";
 import Image from "next/image";
-import { InstagramLogoIcon } from "@radix-ui/react-icons";
+import Link from "next/link";
 
 export default function Header() {
   return (
-    <header className="mb-8 flex flex-col justify-between border-b border-neutral-200 pb-4 md:flex-row">
+    <header className="mb-8 flex flex-col items-center justify-between border-b border-neutral-200 pb-4 md:flex-row">
       <Link
         href={"/"}
         className="mx-auto flex items-center gap-2 transition-all duration-200 hover:opacity-70 md:mx-0"
@@ -14,20 +13,17 @@ export default function Header() {
           Resumos
         </h1>
       </Link>
-      <div className="mx-auto mt-3 flex flex-col items-center gap-4 sm:flex-row md:mx-0 md:mt-0">
+      <div className="mx-auto mt-3 flex flex-col items-center gap-3 sm:flex-row md:mx-0 md:mt-0">
         <div className="flex items-center gap-4">
-          <Link href={"https://www.instagram.com/rafa_epc_"} target="_blank">
-            <button className="flex items-center gap-2 whitespace-pre rounded-xl border border-neutral-200 px-3 py-2.5 text-sm font-medium transition-all duration-200 hover:bg-neutral-50">
-              <InstagramLogoIcon className="size-4" />
+          <Link href={"/donate"}>
+            <button className="flex items-center gap-2 whitespace-pre rounded-xl border border-neutral-200 px-4 py-3 text-sm font-medium transition-all duration-200 hover:bg-neutral-50">
+              👍{"  "}Contribua
             </button>
           </Link>
-          <Link href={"https://vsco.co/rafa-epc/gallery"} target="_blank">
-            <button className="flex items-center gap-2 whitespace-pre rounded-xl border border-neutral-200 px-3 py-2.5 text-sm font-medium transition-all duration-200 hover:bg-neutral-50">
-              <Image src="/vsco.png" alt="Vsco" width={16} height={16} />
-            </button>
-          </Link>
+        </div>
+        <div className="flex items-center gap-4">
           <Link href={"/about"}>
-            <button className="flex items-center gap-2 whitespace-pre rounded-xl border border-neutral-200 px-4 py-2 text-sm font-medium transition-all duration-200 hover:bg-neutral-50">
+            <button className="flex items-center gap-2 whitespace-pre rounded-xl border border-neutral-200 px-4 py-3 text-sm font-medium transition-all duration-200 hover:bg-neutral-50">
               🙋🏻‍♀️{"  "}Sobre
             </button>
           </Link>
@@ -38,7 +34,7 @@ export default function Header() {
           }
           target="_blank"
         >
-          <button className="flex items-center gap-2 rounded-xl border border-neutral-200 px-4 py-2 text-sm font-medium transition-all duration-200 hover:bg-neutral-50">
+          <button className="flex items-center gap-2 rounded-xl border border-neutral-200 px-4 py-3 text-sm font-medium transition-all duration-200 hover:bg-neutral-50">
             <Image src="/drive.png" alt="Google Drive" width={16} height={16} />
             Arquivos no Drive
           </button>
