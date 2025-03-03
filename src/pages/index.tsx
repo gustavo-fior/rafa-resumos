@@ -86,7 +86,7 @@ export default function Home() {
                 title: "VAYØ (guardador de links)",
                 icon: "🔗",
                 iconUrl: "",
-                publicUrl: "https://vayo.cc",
+                publicUrl: "https://vayo.me",
               }} />
             </div>
           )}
