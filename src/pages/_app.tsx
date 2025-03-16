@@ -13,6 +13,11 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <title>Rafa Resumos</title>
         <meta name="description" content="Rafa Resumos" />
         <link rel="icon" href="/favicon.ico" />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9010486204365169"
+          crossOrigin="anonymous"
+        ></script>
       </Head>
       <Analytics />
       <div className={GeistSans.className}>
