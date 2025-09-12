@@ -1,7 +1,7 @@
 import Footer from "~/components/footer";
 import Header from "~/components/header";
 import Link from "next/link";
-import { InstagramLogoIcon } from "@radix-ui/react-icons";
+import { InstagramLogoIcon, LinkedInLogoIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 
 export default function About() {
@@ -27,6 +27,14 @@ export default function About() {
                 <Link href={"https://vsco.co/rafa-epc/gallery"} target="_blank">
                   <button className="flex items-center gap-2 whitespace-pre rounded-xl border border-neutral-200 px-3 py-2.5 text-sm font-medium transition-all duration-200 hover:bg-neutral-50">
                     <Image src="/vsco.png" alt="Vsco" width={16} height={16} />
+                  </button>
+                </Link>
+                <Link
+                  href={"https://www.linkedin.com/in/rafaela-castan-7a43ab2bb/"}
+                  target="_blank"
+                >
+                  <button className="flex items-center gap-2 whitespace-pre rounded-xl border border-neutral-200 px-3 py-2.5 text-sm font-medium transition-all duration-200 hover:bg-neutral-50">
+                    <LinkedInLogoIcon className="size-4" />
                   </button>
                 </Link>
               </div>
@@ -79,7 +87,7 @@ export default function About() {
               muuuito, e isso ainda me ajudaria a pagar a faculdade!
             </p>
 
-            <p className="text-gray-700 mt-8 text-lg font-medium">
+            <p className="mt-8 text-lg font-medium text-gray-700">
               Fico à disposição e bons estudos! :)
             </p>
           </div>
