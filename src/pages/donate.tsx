@@ -1,7 +1,7 @@
 import Footer from "~/components/footer";
 import Header from "~/components/header";
 import Link from "next/link";
-import { InstagramLogoIcon } from "@radix-ui/react-icons";
+import { InstagramLogoIcon, LinkedInLogoIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 
 export default function About() {
@@ -29,6 +29,14 @@ export default function About() {
                     <Image src="/vsco.png" alt="Vsco" width={16} height={16} />
                   </button>
                 </Link>
+                <Link
+                  href={"https://www.linkedin.com/in/rafaela-castan-7a43ab2bb/"}
+                  target="_blank"
+                >
+                  <button className="flex items-center gap-2 whitespace-pre rounded-xl border border-neutral-200 px-3 py-2.5 text-sm font-medium transition-all duration-200 hover:bg-neutral-50">
+                    <LinkedInLogoIcon className="size-4" />
+                  </button>
+                </Link>
               </div>
             </div>
 
@@ -46,7 +54,7 @@ export default function About() {
               <Link
                 href="https://ko-fi.com/rafacastan"
                 target="_blank"
-                className="text-gray-900 transition-all duration-200 hover:text-gray-700 underline"
+                className="text-gray-900 underline transition-all duration-200 hover:text-gray-700"
               >
                 https://ko-fi.com/rafacastan
               </Link>
