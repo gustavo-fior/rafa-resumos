@@ -16,6 +16,12 @@ export default function Home() {
   return (
     <>
       <main className="min-h-screen bg-white">
+        <div className="mx-auto mb-0 flex items-center justify-center gap-2 bg-amber-50 px-4 py-3 text-center text-sm text-amber-800 border-b border-amber-200">
+          <span>🚧</span>
+          <p>
+            Este site está em manutenção e voltará em breve!
+          </p>
+        </div>
         <div className="mx-auto max-w-6xl px-4 pb-16 pt-12 sm:px-6 lg:px-8">
           <Header />
 
@@ -25,6 +31,7 @@ export default function Home() {
             meus estudos na PUCPR!
           </blockquote>
 
+          <div className="pointer-events-none select-none blur-sm">
           <div className="mb-4 mt-8 flex justify-between">
             <h2 className="text-xl font-medium text-gray-900">
               Resumos{" "}
@@ -115,6 +122,7 @@ export default function Home() {
               {utilitiesData?.map((page) => <Page key={page.id} page={page} />)}
             </div>
           )}
+          </div>
         </div>
       </main>
       <Footer />
