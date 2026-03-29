@@ -8,7 +8,7 @@ export default function Header() {
         href={"/"}
         className="mx-auto flex items-center gap-2 transition-all duration-200 hover:opacity-70 md:mx-0"
       >
-        <Image src="/rafa.png" alt="Notion Pages" width={64} height={64} />
+        <Image src="/rafa-404.png" alt="Notion Pages" width={64} height={64} />
         <h1 className="font-serif text-4xl font-light tracking-tight text-gray-900">
           Resumos
         </h1>
