@@ -1,0 +1,24 @@
+{
+  "name": "@rafa-resumos-2/auth",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@rafa-resumos-2/db": "workspace:*",
+    "@rafa-resumos-2/env": "workspace:*",
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@rafa-resumos-2/config": "workspace:*",
+    "typescript": "^5"
+  }
+}
