@@ -7,7 +7,8 @@ import {
 } from "@rafa-resumos/api/services/abacatepay";
 import { processAbacatepayWebhook } from "@rafa-resumos/api/services/purchase";
 import { auth } from "@rafa-resumos/auth";
-import { env } from "@rafa-resumos/env/server";
+import { env as abacatepayEnv } from "@rafa-resumos/env/abacatepay";
+import { env as authEnv } from "@rafa-resumos/env/auth";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
@@ -18,7 +19,7 @@ app.use(logger());
 app.use(
   "/*",
   cors({
-    origin: env.CORS_ORIGIN,
+    origin: authEnv.CORS_ORIGIN,
     allowMethods: ["GET", "POST", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -32,7 +33,7 @@ app.post("/webhooks/abacatepay", async (c) => {
   const signature = c.req.header("X-Webhook-Signature") ?? "";
   const webhookSecret = c.req.query("webhookSecret");
 
-  if (webhookSecret && webhookSecret !== env.ABACATEPAY_WEBHOOK_SECRET) {
+  if (webhookSecret && webhookSecret !== abacatepayEnv.ABACATEPAY_WEBHOOK_SECRET) {
     return c.json({ error: "Unauthorized" }, 401);
   }
 

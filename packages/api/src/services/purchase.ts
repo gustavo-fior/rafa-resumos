@@ -6,7 +6,7 @@ import {
   type OrderStatus,
   webhookEvents,
 } from "@rafa-resumos/db/schema/app";
-import { env } from "@rafa-resumos/env/server";
+import { env } from "@rafa-resumos/env/abacatepay";
 import { and, desc, eq, gt, isNull } from "drizzle-orm";
 
 import {

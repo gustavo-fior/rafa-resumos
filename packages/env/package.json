@@ -4,7 +4,11 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./server": "./src/server.ts",
+    "./auth": "./src/auth.ts",
+    "./db": "./src/db.ts",
+    "./admin": "./src/admin.ts",
+    "./notion": "./src/notion.ts",
+    "./abacatepay": "./src/abacatepay.ts",
     "./web": "./src/web.ts"
   },
   "dependencies": {

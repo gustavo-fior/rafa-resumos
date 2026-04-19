@@ -1,4 +1,4 @@
-import { env } from "@rafa-resumos/env/server";
+import { env } from "@rafa-resumos/env/db";
 import { drizzle } from "drizzle-orm/node-postgres";
 
 import * as schema from "./schema";

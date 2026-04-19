@@ -5,7 +5,7 @@ import {
   type ProductCategory,
   type ProductStatus,
 } from "@rafa-resumos/db/schema/app";
-import { env } from "@rafa-resumos/env/server";
+import { env } from "@rafa-resumos/env/notion";
 import { and, eq, ne } from "drizzle-orm";
 
 import { slugify } from "../lib/slug";

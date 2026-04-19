@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 
-import { env } from "@rafa-resumos/env/server";
+import { env } from "@rafa-resumos/env/abacatepay";
 
 const ABACATEPAY_API_BASE_URL = "https://api.abacatepay.com/v2";
 

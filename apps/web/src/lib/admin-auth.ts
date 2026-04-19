@@ -1,4 +1,5 @@
-import { env } from "@rafa-resumos/env/server";
+import { env as adminEnv } from "@rafa-resumos/env/admin";
+import { env as authEnv } from "@rafa-resumos/env/auth";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 
@@ -6,8 +7,8 @@ export const ADMIN_COOKIE = "admin_session";
 const SEVEN_DAYS_SECONDS = 60 * 60 * 24 * 7;
 
 function adminToken() {
-  return createHmac("sha256", env.BETTER_AUTH_SECRET)
-    .update(`admin:${env.ADMIN_PASSWORD}`)
+  return createHmac("sha256", authEnv.BETTER_AUTH_SECRET)
+    .update(`admin:${adminEnv.ADMIN_PASSWORD}`)
     .digest("hex");
 }
 
@@ -28,7 +29,7 @@ export async function grantAdminCookie() {
     maxAge: SEVEN_DAYS_SECONDS,
     path: "/admin",
     sameSite: "lax",
-    secure: env.NODE_ENV === "production",
+    secure: authEnv.NODE_ENV === "production",
   });
 }
 
@@ -38,7 +39,7 @@ export async function revokeAdminCookie() {
 }
 
 export function verifyAdminPassword(password: string) {
-  const expected = Buffer.from(env.ADMIN_PASSWORD);
+  const expected = Buffer.from(adminEnv.ADMIN_PASSWORD);
   const got = Buffer.from(password);
   if (got.length !== expected.length) return false;
   return timingSafeEqual(got, expected);

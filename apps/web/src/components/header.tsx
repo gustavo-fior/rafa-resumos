@@ -4,6 +4,7 @@ import { Menu } from "lucide-react";
 import type { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@rafa-resumos/ui/components/button";
@@ -17,6 +18,15 @@ import UserMenu from "./user-menu";
 
 export default function Header() {
   const { data: session } = authClient.useSession();
+  const pathname = usePathname();
+
+  const headerImage = pathname.startsWith("/reader")
+    ? "/rafa-studying.jpeg"
+    : pathname.startsWith("/login")
+    ? "/rafa-password.jpeg"
+    : pathname.startsWith("/products")
+    ? "/rafa-party.jpeg"
+    : "/rafa.png";
 
   const unauthenticatedLinks = [
     { href: "/about", label: "Sobre" },
@@ -39,10 +49,10 @@ export default function Header() {
           className="flex items-center gap-2 transition-opacity hover:opacity-80"
         >
           <Image
-            src="/rafa.png"
+            src={headerImage}
             alt="Rafaela"
-            width={30}
-            height={30}
+            width={42}
+            height={42}
             priority
             unoptimized
             className="rounded"

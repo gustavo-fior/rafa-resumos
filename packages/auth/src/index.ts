@@ -1,6 +1,6 @@
 import { createDb } from "@rafa-resumos/db";
 import * as schema from "@rafa-resumos/db/schema/auth";
-import { env } from "@rafa-resumos/env/server";
+import { env } from "@rafa-resumos/env/auth";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
