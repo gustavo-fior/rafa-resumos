@@ -21,11 +21,11 @@ export default function Header() {
   const pathname = usePathname();
 
   const headerImage = pathname.startsWith("/reader")
-    ? "/rafa-studying.jpeg"
+    ? "/rafa-studying.png"
     : pathname.startsWith("/login")
-    ? "/rafa-password.jpeg"
+    ? "/rafa-password.png"
     : pathname.startsWith("/products")
-    ? "/rafa-party.jpeg"
+    ? "/rafa-party.png"
     : "/rafa.png";
 
   const unauthenticatedLinks = [
