@@ -22,7 +22,7 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@rafa-resumos-2/ui/*": ["../../packages/ui/src/*"]
+      "@rafa-resumos/ui/*": ["../../packages/ui/src/*"]
     }
   },
   "include": [

@@ -1,5 +1,5 @@
 {
-  "name": "rafa-resumos-2",
+  "name": "rafa-resumos",
   "private": true,
   "workspaces": {
     "packages": [
@@ -31,18 +31,19 @@
     "check-types": "turbo check-types",
     "dev:web": "turbo -F web dev",
     "dev:server": "turbo -F server dev",
-    "db:push": "turbo -F @rafa-resumos-2/db db:push",
-    "db:studio": "turbo -F @rafa-resumos-2/db db:studio",
-    "db:generate": "turbo -F @rafa-resumos-2/db db:generate",
-    "db:migrate": "turbo -F @rafa-resumos-2/db db:migrate"
+    "sync:notion": "turbo -F @rafa-resumos/api sync:notion",
+    "db:push": "turbo -F @rafa-resumos/db db:push",
+    "db:studio": "turbo -F @rafa-resumos/db db:studio",
+    "db:generate": "turbo -F @rafa-resumos/db db:generate",
+    "db:migrate": "turbo -F @rafa-resumos/db db:migrate"
   },
   "dependencies": {
-    "@rafa-resumos-2/env": "workspace:*",
+    "@rafa-resumos/env": "workspace:*",
     "dotenv": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@rafa-resumos-2/config": "workspace:*",
+    "@rafa-resumos/config": "workspace:*",
     "@types/bun": "catalog:",
     "turbo": "^2.8.12",
     "typescript": "^5"

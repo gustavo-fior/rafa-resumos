@@ -1,6 +1,6 @@
 "use client";
 
-import { Toaster } from "@rafa-resumos-2/ui/components/sonner";
+import { Toaster } from "@rafa-resumos/ui/components/sonner";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
@@ -10,12 +10,17 @@ import { ThemeProvider } from "./theme-provider";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+    <ThemeProvider
+      attribute="class"
+      forcedTheme="light"
+      enableSystem={false}
+      disableTransitionOnChange
+    >
       <QueryClientProvider client={queryClient}>
         {children}
         <ReactQueryDevtools />
       </QueryClientProvider>
-      <Toaster richColors />
+      <Toaster theme="light" />
     </ThemeProvider>
   );
 }

@@ -1,23 +1,24 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Lora } from "next/font/google";
 
 import "../index.css";
 import Header from "@/components/header";
 import Providers from "@/components/providers";
+import Footer from "@/components/footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const sans = Inter({
+  variable: "--font-body",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const serif = Lora({
+  variable: "--font-display",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "rafa-resumos-2",
-  description: "rafa-resumos-2",
+  title: "Rafa Resumos",
+  description: "Biblioteca digital para organizar e ler os resumos da Rafaela.",
 };
 
 export default function RootLayout({
@@ -26,12 +27,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="pt-BR" suppressHydrationWarning className="overflow-x-hidden">
+      <body
+        className={`${sans.variable} ${serif.variable} min-h-svh overflow-x-hidden bg-neutral-50 text-[#37352f] antialiased`}
+      >
         <Providers>
-          <div className="grid grid-rows-[auto_1fr] h-svh">
+          <div className="grid min-h-svh grid-rows-[auto_1fr] bg-neutral-50">
             <Header />
             {children}
+            <Footer />
           </div>
         </Providers>
       </body>

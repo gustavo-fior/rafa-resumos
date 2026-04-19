@@ -12,13 +12,14 @@
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@rafa-resumos-2/ui/components",
-    "utils": "@rafa-resumos-2/ui/lib/utils",
-    "hooks": "@rafa-resumos-2/ui/hooks",
-    "lib": "@rafa-resumos-2/ui/lib",
-    "ui": "@rafa-resumos-2/ui/components"
+    "components": "@rafa-resumos/ui/components",
+    "utils": "@rafa-resumos/ui/lib/utils",
+    "hooks": "@rafa-resumos/ui/hooks",
+    "lib": "@rafa-resumos/ui/lib",
+    "ui": "@rafa-resumos/ui/components"
   },
   "menuColor": "default",
   "menuAccent": "subtle",
-  "registries": {}
+  "registries": {},
+  "rtl": false
 }

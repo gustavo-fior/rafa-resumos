@@ -1,5 +1,5 @@
 {
-  "name": "@rafa-resumos-2/db",
+  "name": "@rafa-resumos/db",
   "type": "module",
   "exports": {
     ".": {
@@ -16,14 +16,14 @@
     "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
-    "@rafa-resumos-2/env": "workspace:*",
+    "@rafa-resumos/env": "workspace:*",
     "dotenv": "catalog:",
     "drizzle-orm": "^0.45.1",
     "pg": "^8.17.1",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@rafa-resumos-2/config": "workspace:*",
+    "@rafa-resumos/config": "workspace:*",
     "@types/pg": "^8.16.0",
     "drizzle-kit": "^0.31.8",
     "typescript": "^5"

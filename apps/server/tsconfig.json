@@ -1,5 +1,5 @@
 {
-  "extends": "@rafa-resumos-2/config/tsconfig.base.json",
+  "extends": "@rafa-resumos/config/tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
     "outDir": "dist",

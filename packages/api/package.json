@@ -1,5 +1,5 @@
 {
-  "name": "@rafa-resumos-2/api",
+  "name": "@rafa-resumos/api",
   "type": "module",
   "exports": {
     ".": {
@@ -9,18 +9,21 @@
       "default": "./src/*.ts"
     }
   },
-  "scripts": {},
+  "scripts": {
+    "sync:notion": "bun run src/scripts/sync-notion.ts"
+  },
   "dependencies": {
-    "@rafa-resumos-2/auth": "workspace:*",
-    "@rafa-resumos-2/db": "workspace:*",
-    "@rafa-resumos-2/env": "workspace:*",
+    "@rafa-resumos/auth": "workspace:*",
+    "@rafa-resumos/db": "workspace:*",
+    "@rafa-resumos/env": "workspace:*",
     "@trpc/client": "catalog:",
     "@trpc/server": "catalog:",
+    "drizzle-orm": "^0.45.1",
     "dotenv": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@rafa-resumos-2/config": "workspace:*",
+    "@rafa-resumos/config": "workspace:*",
     "hono": "catalog:",
     "typescript": "^5"
   }

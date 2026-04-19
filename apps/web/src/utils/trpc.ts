@@ -1,5 +1,5 @@
-import type { AppRouter } from "@rafa-resumos-2/api/routers/index";
-import { env } from "@rafa-resumos-2/env/web";
+import type { AppRouter } from "@rafa-resumos/api/routers/index";
+import { env } from "@rafa-resumos/env/web";
 import { QueryCache, QueryClient } from "@tanstack/react-query";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
@@ -18,7 +18,7 @@ export const queryClient = new QueryClient({
   }),
 });
 
-const trpcClient = createTRPCClient<AppRouter>({
+export const trpcClient = createTRPCClient<AppRouter>({
   links: [
     httpBatchLink({
       url: `${env.NEXT_PUBLIC_SERVER_URL}/trpc`,

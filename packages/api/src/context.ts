@@ -1,4 +1,4 @@
-import { auth } from "@rafa-resumos-2/auth";
+import { auth } from "@rafa-resumos/auth";
 import type { Context as HonoContext } from "hono";
 
 export type CreateContextOptions = {

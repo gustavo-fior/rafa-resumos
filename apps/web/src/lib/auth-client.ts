@@ -1,4 +1,4 @@
-import { env } from "@rafa-resumos-2/env/web";
+import { env } from "@rafa-resumos/env/web";
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({

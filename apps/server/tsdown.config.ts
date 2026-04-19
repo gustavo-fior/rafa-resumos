@@ -5,5 +5,5 @@ export default defineConfig({
   format: "esm",
   outDir: "./dist",
   clean: true,
-  noExternal: [/@rafa-resumos-2\/.*/],
+  noExternal: [/@rafa-resumos\/.*/],
 });

@@ -11,10 +11,10 @@
   },
   "dependencies": {
     "@hono/trpc-server": "^0.4.0",
-    "@rafa-resumos-2/api": "workspace:*",
-    "@rafa-resumos-2/auth": "workspace:*",
-    "@rafa-resumos-2/db": "workspace:*",
-    "@rafa-resumos-2/env": "workspace:*",
+    "@rafa-resumos/api": "workspace:*",
+    "@rafa-resumos/auth": "workspace:*",
+    "@rafa-resumos/db": "workspace:*",
+    "@rafa-resumos/env": "workspace:*",
     "@trpc/server": "catalog:",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
@@ -22,7 +22,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@rafa-resumos-2/config": "workspace:*",
+    "@rafa-resumos/config": "workspace:*",
     "@types/bun": "catalog:",
     "tsdown": "^0.16.5",
     "typescript": "^5"

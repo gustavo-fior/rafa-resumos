@@ -1,6 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "base-lyra",
+  "style": "base-luma",
   "rsc": true,
   "tsx": true,
   "tailwind": {
@@ -13,12 +13,13 @@
   "iconLibrary": "lucide",
   "aliases": {
     "components": "@/components",
-    "utils": "@rafa-resumos-2/ui/lib/utils",
-    "ui": "@rafa-resumos-2/ui/components",
+    "utils": "@rafa-resumos/ui/lib/utils",
+    "ui": "@rafa-resumos/ui/components",
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
   "menuColor": "default",
   "menuAccent": "subtle",
+  "rtl": false,
   "registries": {}
 }

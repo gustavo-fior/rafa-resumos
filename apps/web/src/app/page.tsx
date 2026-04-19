@@ -1,47 +1,47 @@
-"use client";
-import { useQuery } from "@tanstack/react-query";
+import {
+  categoryValues,
+  listPublishedProducts,
+  listPublishedSubjects,
+} from "@rafa-resumos/api/services/catalog";
+import HomeCatalogClient from "@/components/home-catalog-client";
+import { getOptionalSession } from "@/lib/session";
 
-import { trpc } from "@/utils/trpc";
+const categoryLabels: Record<(typeof categoryValues)[number], string> = {
+  medicina: "Resumos",
+  utilidades: "Utilidades",
+};
 
-const TITLE_TEXT = `
- ██████╗ ███████╗████████╗████████╗███████╗██████╗
- ██╔══██╗██╔════╝╚══██╔══╝╚══██╔══╝██╔════╝██╔══██╗
- ██████╔╝█████╗     ██║      ██║   █████╗  ██████╔╝
- ██╔══██╗██╔══╝     ██║      ██║   ██╔══╝  ██╔══██╗
- ██████╔╝███████╗   ██║      ██║   ███████╗██║  ██║
- ╚═════╝ ╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚═╝  ╚═╝
+export default async function Home() {
+  const session = await getOptionalSession();
 
- ████████╗    ███████╗████████╗ █████╗  ██████╗██╗  ██╗
- ╚══██╔══╝    ██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝
-    ██║       ███████╗   ██║   ███████║██║     █████╔╝
-    ██║       ╚════██║   ██║   ██╔══██║██║     ██╔═██╗
-    ██║       ███████║   ██║   ██║  ██║╚██████╗██║  ██╗
-    ╚═╝       ╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
- `;
-
-export default function Home() {
-  const healthCheck = useQuery(trpc.healthCheck.queryOptions());
+  const [initialSections, subjectsByCategory] = await Promise.all([
+    Promise.all(
+      categoryValues.map(async (category) => {
+        const products = await listPublishedProducts(
+          {
+            category,
+          },
+          session?.user.id
+        );
+        return { category, products };
+      })
+    ),
+    Promise.all(
+      categoryValues.map(async (category) => {
+        const subjects = await listPublishedSubjects(category);
+        return [category, subjects] as const;
+      })
+    ).then((entries) => Object.fromEntries(entries)),
+  ]);
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-2">
-      <pre className="overflow-x-auto font-mono text-sm">{TITLE_TEXT}</pre>
-      <div className="grid gap-6">
-        <section className="rounded-lg border p-4">
-          <h2 className="mb-2 font-medium">API Status</h2>
-          <div className="flex items-center gap-2">
-            <div
-              className={`h-2 w-2 rounded-full ${healthCheck.data ? "bg-green-500" : "bg-red-500"}`}
-            />
-            <span className="text-sm text-muted-foreground">
-              {healthCheck.isLoading
-                ? "Checking..."
-                : healthCheck.data
-                  ? "Connected"
-                  : "Disconnected"}
-            </span>
-          </div>
-        </section>
-      </div>
-    </div>
+    <main className="mx-auto w-full min-w-0 max-w-4xl overflow-x-clip px-4 pb-16 md:px-0">
+      <HomeCatalogClient
+        categoryLabels={categoryLabels}
+        categoryValues={categoryValues}
+        initialSections={initialSections}
+        subjectsByCategory={subjectsByCategory}
+      />
+    </main>
   );
 }

@@ -1,1 +1,141 @@
-@import "@rafa-resumos-2/ui/globals.css";
+@import "@rafa-resumos/ui/globals.css";
+
+:root {
+  --font-sans: var(--font-body);
+  --notion-text: #37352f;
+  --notion-muted: #787774;
+  --notion-subtle: #9b9a97;
+  --notion-border: #ededec;
+  --notion-hover: #f1f1ef;
+  --notion-surface: #f7f7f5;
+}
+
+body {
+  background: #ffffff;
+  color: var(--notion-text);
+  font-family: var(--font-body), ui-sans-serif, system-ui, -apple-system,
+    sans-serif;
+  font-feature-settings: "ss01", "cv11";
+}
+
+.reader-prose {
+  color: #37352f;
+}
+
+.reader-prose > * + * {
+  margin-top: 1rem;
+}
+
+.reader-columns {
+  --reader-column-count: 1;
+  display: grid;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.reader-column {
+  min-width: 0;
+  border: 1px solid var(--notion-border);
+  border-radius: 4px;
+  background: var(--notion-surface);
+  padding: 1.25rem;
+}
+
+.reader-column-content > * + * {
+  margin-top: 1rem;
+}
+
+.reader-column-content .reader-columns {
+  margin: 1.5rem 0;
+}
+
+@media (min-width: 900px) {
+  .reader-columns {
+    grid-template-columns: repeat(var(--reader-column-count), minmax(0, 1fr));
+  }
+}
+
+.reader-prose p,
+.reader-prose li,
+.reader-prose blockquote {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #37352f;
+}
+
+.reader-prose ul,
+.reader-prose ol {
+  padding-left: 1.5rem;
+}
+
+.reader-prose ul {
+  list-style: disc;
+}
+
+.reader-prose ol {
+  list-style: decimal;
+}
+
+.reader-prose ul ul {
+  list-style: circle;
+}
+
+.reader-prose ul ul ul {
+  list-style: square;
+}
+
+.reader-prose li {
+  padding-left: 0.25rem;
+}
+
+.reader-prose li::marker {
+  color: #9b9a97;
+}
+
+.reader-prose li + li {
+  margin-top: 0.5rem;
+}
+
+.reader-prose blockquote {
+  border-left: 3px solid #37352f;
+  margin: 1.5rem 0;
+  padding-left: 1rem;
+  color: #37352f;
+  font-style: normal;
+}
+
+.reader-prose hr {
+  border-color: var(--notion-border);
+  margin: 2rem 0;
+}
+
+.reader-prose code {
+  border-radius: 3px;
+  background: rgba(135, 131, 120, 0.15);
+  color: #eb5757;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.85em;
+}
+
+.reader-prose pre {
+  overflow-x: auto;
+  border: 1px solid var(--notion-border);
+  background: var(--notion-surface);
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border-radius: 4px;
+}
+
+.reader-prose table th,
+.reader-prose table td {
+  border: 1px solid var(--notion-border);
+  padding: 0.6rem 0.85rem;
+  text-align: left;
+  font-size: 0.95em;
+}
+
+.reader-prose table th {
+  background: var(--notion-surface);
+  color: #37352f;
+  font-weight: 600;
+}

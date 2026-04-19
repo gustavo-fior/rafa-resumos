@@ -1,5 +1,5 @@
 {
-  "name": "@rafa-resumos-2/auth",
+  "name": "@rafa-resumos/auth",
   "type": "module",
   "exports": {
     ".": {
@@ -11,14 +11,14 @@
   },
   "scripts": {},
   "dependencies": {
-    "@rafa-resumos-2/db": "workspace:*",
-    "@rafa-resumos-2/env": "workspace:*",
+    "@rafa-resumos/db": "workspace:*",
+    "@rafa-resumos/env": "workspace:*",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@rafa-resumos-2/config": "workspace:*",
+    "@rafa-resumos/config": "workspace:*",
     "typescript": "^5"
   }
 }

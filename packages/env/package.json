@@ -1,5 +1,5 @@
 {
-  "name": "@rafa-resumos-2/env",
+  "name": "@rafa-resumos/env",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -14,7 +14,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@rafa-resumos-2/config": "workspace:*",
+    "@rafa-resumos/config": "workspace:*",
     "@types/bun": "catalog:",
     "typescript": "^5"
   }
