@@ -15,6 +15,7 @@ for (const envPath of [
 }
 
 export const env = createEnv({
+  clientPrefix: "",
   server: {
     DATABASE_URL: z.string().min(1),
     BETTER_AUTH_SECRET: z.string().min(32),
@@ -32,6 +33,7 @@ export const env = createEnv({
     ABACATEPAY_WEBHOOK_PUBLIC_KEY: z.string().min(1),
     ADMIN_PASSWORD: z.string().min(1),
   },
+  client: {},
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
 });
