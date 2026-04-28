@@ -239,7 +239,28 @@ async function refreshPendingOrder(order: PurchaseRow) {
     return order;
   }
 
-  const providerState = await checkTransparentPixCharge(order.providerChargeId);
+  let providerState;
+  try {
+    providerState = await checkTransparentPixCharge(order.providerChargeId);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (/not found/i.test(message)) {
+      console.warn(
+        `[purchase] Charge ${order.providerChargeId} unknown to AbacatePay — marking order ${order.id} expired.`
+      );
+      await db
+        .update(orders)
+        .set({
+          status: "expired",
+          providerStatus: "NOT_FOUND",
+          updatedAt: new Date(),
+        })
+        .where(eq(orders.id, order.id));
+      return (await getOrderByIdForUser(order.id, order.userId)) ?? order;
+    }
+    throw error;
+  }
+
   const nextStatus = toInternalOrderStatus(providerState.status);
 
   if (
