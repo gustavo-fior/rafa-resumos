@@ -54,7 +54,9 @@ type NotionPropertyValue =
 type NotionIcon =
   | { emoji: string; type: "emoji" }
   | { external: { url: string }; type: "external" }
-  | { file: { url: string }; type: "file" };
+  | { file: { url: string }; type: "file" }
+  | { custom_emoji: { url: string }; type: "custom_emoji" }
+  | { icon: { name: string; color?: string }; type: "icon" };
 
 type NotionPageResult = {
   icon: NotionIcon | null;
@@ -444,14 +446,42 @@ async function fetchAsDataUri(url: string): Promise<string | null> {
 }
 
 async function parseIcon(
-  icon: NotionIcon | null
+  icon: NotionIcon | null,
+  pageId?: string
 ): Promise<{ iconEmoji: string | null; iconUrl: string | null }> {
   if (!icon) return { iconEmoji: null, iconUrl: null };
   if (icon.type === "emoji") return { iconEmoji: icon.emoji, iconUrl: null };
 
-  const sourceUrl = icon.type === "file" ? icon.file.url : icon.external.url;
-  const dataUri = await fetchAsDataUri(sourceUrl);
-  return { iconEmoji: null, iconUrl: dataUri };
+  try {
+    let sourceUrl: string | undefined;
+    if (icon.type === "file") sourceUrl = icon.file?.url;
+    else if (icon.type === "external") sourceUrl = icon.external?.url;
+    else if (icon.type === "custom_emoji") sourceUrl = icon.custom_emoji?.url;
+    else if (icon.type === "icon" && icon.icon?.name) {
+      const color = icon.icon.color ?? "gray";
+      sourceUrl = `https://www.notion.so/icons/${icon.icon.name}_${color}.svg`;
+    }
+
+    if (!sourceUrl) {
+      logSync("warn", "Unhandled or malformed Notion icon shape.", {
+        pageId,
+        iconType: (icon as { type?: string }).type,
+        iconKeys: Object.keys(icon as object),
+        rawIcon: icon,
+      });
+      return { iconEmoji: null, iconUrl: null };
+    }
+
+    const dataUri = await fetchAsDataUri(sourceUrl);
+    return { iconEmoji: null, iconUrl: dataUri };
+  } catch (error) {
+    logSync("warn", "parseIcon threw — skipping icon for this page.", {
+      pageId,
+      error: error instanceof Error ? error.message : "unknown error",
+      rawIcon: icon,
+    });
+    return { iconEmoji: null, iconUrl: null };
+  }
 }
 
 function parseCategory(
@@ -613,7 +643,7 @@ export async function syncNotionProducts() {
       continue;
     }
 
-    const { iconEmoji, iconUrl } = await parseIcon(page.icon);
+    const { iconEmoji, iconUrl } = await parseIcon(page.icon, page.id);
 
     const baseValues = {
       category,

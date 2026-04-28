@@ -41,12 +41,12 @@ export default function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/30 cursor-pointer hover:opacity-80 transition-opacity">
-        <Avatar size="sm">
+        <Avatar>
           {userImage ? (
             <AvatarImage src={userImage} alt={session.user.name ?? ""} />
           ) : null}
           <AvatarFallback>
-            <User className="size-3.5" strokeWidth={1.75} />
+            <User className="size-4" strokeWidth={1.75} />
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>

@@ -78,7 +78,7 @@ export function AnimatedTabs({
         ref={containerRef}
         className="absolute z-10 w-full overflow-hidden [clip-path:inset(0px_75%_0px_0%_round_17px)] [transition:clip-path_0.25s_ease]"
       >
-        <div className="relative flex w-full justify-center bg-primary/85">
+        <div className="relative flex w-full justify-center bg-primary/10">
           {normalizedTabs.map((tab) =>
             tab.href ? (
               <a
@@ -86,7 +86,7 @@ export function AnimatedTabs({
                 href={tab.href}
                 onClick={() => handleTabClick(tab.value)}
                 className={cn(
-                  "flex h-8 items-center rounded-full p-3 px-4 font-medium text-white text-sm/5.5 cursor-pointer"
+                  "flex h-8 items-center rounded-full p-3 px-4 font-medium text-neutral-900 text-sm/5.5 cursor-pointer"
                 )}
                 tabIndex={-1}
               >
@@ -98,7 +98,7 @@ export function AnimatedTabs({
                 type="button"
                 onClick={() => handleTabClick(tab.value)}
                 className={cn(
-                  "flex h-8 items-center rounded-full p-3 px-4 font-medium text-white text-sm/5.5 cursor-pointer"
+                  "flex h-8 items-center rounded-full p-3 px-4 font-medium text-neutral-900 text-sm/5.5 cursor-pointer"
                 )}
                 tabIndex={-1}
               >

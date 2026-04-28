@@ -51,8 +51,8 @@ export default function Header() {
           <Image
             src={headerImage}
             alt="Rafaela"
-            width={42}
-            height={42}
+            width={64}
+            height={64}
             priority
             unoptimized
             className="rounded"
