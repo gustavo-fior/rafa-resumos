@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { boolean, index, integer, pgEnum, pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import { boolean, doublePrecision, index, integer, pgEnum, pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
 
 import { user } from "./auth";
 
@@ -27,7 +27,7 @@ export const subjects = pgTable(
       .$defaultFn(() => crypto.randomUUID()),
     name: text("name").notNull(),
     slug: text("slug").notNull(),
-    sortOrder: integer("sort_order").notNull().default(0),
+    sortOrder: doublePrecision("sort_order").notNull().default(0),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
@@ -54,7 +54,7 @@ export const products = pgTable(
     iconEmoji: text("icon_emoji"),
     iconUrl: text("icon_url"),
     featured: boolean("featured").notNull().default(false),
-    sortOrder: integer("sort_order").notNull().default(0),
+    sortOrder: doublePrecision("sort_order").notNull().default(0),
     status: productStatus("status").notNull().default("draft"),
     priceCents: integer("price_cents").notNull().default(0),
     contentMarkdown: text("content_markdown"),

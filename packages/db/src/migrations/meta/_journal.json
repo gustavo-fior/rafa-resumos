@@ -15,6 +15,13 @@
       "when": 1776535778927,
       "tag": "0001_careful_talon",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1777490126784,
+      "tag": "0002_smiling_zeigeist",
+      "breakpoints": true
     }
   ]
 }
