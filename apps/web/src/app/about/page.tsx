@@ -11,7 +11,7 @@ export default function AboutPage() {
     <main className="mx-auto w-full max-w-4xl px-4 py-12 pt-6 md:px-0">
       <div className="mb-6 flex items-center justify-between gap-3">
         <h1 className="font-(family-name:--font-display) text-xl font-semibold text-[#37352f]">
-          Sobre
+          Olá estudante da área da saúde!
         </h1>
         <Link
           href="https://www.linkedin.com/in/rafaela-castan-7a43ab2bb/"
@@ -26,9 +26,10 @@ export default function AboutPage() {
 
       <div className="space-y-5 text-[15px] leading-relaxed text-[#37352f]">
         <p>
-          Oiie! Meu nome é Rafaela Castan e aqui disponibilizo meus resumos,
-          desenhos, apostilas e outros arquivos que fiz ou reuni ao longo dos
-          meus estudos na PUCPR!
+          Meu nome é Rafaela Eloísa Portela Castan, sou estudante de medicina na
+          PUCPR da turma 94, aqui disponibilizo meus resumos, desenhos,
+          apostilas e outros arquivos que fiz ou reuni ao longo dos meus
+          estudos!
         </p>
 
         <p>
@@ -40,14 +41,27 @@ export default function AboutPage() {
         </p>
 
         <p>
-          A ideia é simples: você acessa o site e é direcionado diretamente para
-          os meus resumos, onde tudo está organizado de forma prática e visual.
+          Agora, em 2026, me tornei monitora da disciplina Aspectos Estruturais
+          e Funcionais do Tecido Humano e Biologia Celular. Aqui também estão
+          reunidos meus resumos das aulas relacionadas a essa disciplina, que
+          incluem Biologia Celular, Início da Vida e Histologia. Ao longo do
+          semestre, vou disponibilizar mais conteúdos com base nas aulas. Se
+          você estiver fazendo a monitoria comigo, encontrará o material
+          completo nessas pastas.
         </p>
 
         <p>
-          Aqui, você também encontrará templates prontos no Notion para ajudar
-          na organização dos seus estudos, tarefas, aulas, revisões e muito
-          mais.
+          O site já está ativo há um ano, sempre fizemos com muito carinho,
+          mesmo dando um trabalhinho extra, e até então era de forma gratuita.
+          Fico muito feliz em saber que ajudou pessoas nesse tempo. Mas, por
+          condições financeiras da minha família, decidimos começar a cobrar
+          para me ajudar a pagar a faculdade.
+        </p>
+
+        <p>
+          O primeiro conteúdo de cada matéria continuará gratuito. Assim, você
+          consegue ter uma ideia de como são meus resumos de cada disciplina, de
+          umas ajudas que vão ser gratuitos também :)
         </p>
 
         <p>
@@ -76,17 +90,6 @@ export default function AboutPage() {
           </Link>
           ). Será um prazer conversar e trocar ideias!
         </p>
-
-        <p>
-          Manter esse projeto dá um trabalhinho extra, mas faço com carinho! Se,
-          de alguma forma, te ajudei e você quiser contribuir para me motivar a
-          continuar, criei um pix (rafacastan.resumos@gmail.com) e um ko-fi se
-          quiser contribuir com o paypal ou cartão! Assim pode doar da forma que
-          preferir, anônima ou não. Eu agradeceria muuuito, e isso ainda me
-          ajudaria a pagar a faculdade!
-        </p>
-
-        <p>Fico à disposição e bons estudos! :)</p>
       </div>
     </main>
   );
