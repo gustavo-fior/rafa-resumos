@@ -3,6 +3,9 @@ import * as schema from "@rafa-resumos/db/schema/auth";
 import { env } from "@rafa-resumos/env/auth";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { eq } from "drizzle-orm";
+
+import { ensureOwnerEntitlementsForUser, isOwnerEmail } from "./owner-access";
 
 function getSharedCookieDomain(appUrl: string) {
   const hostname = new URL(appUrl).hostname.toLowerCase();
@@ -50,6 +53,46 @@ export function createAuth() {
       },
     },
     plugins: [],
+    databaseHooks: {
+      user: {
+        create: {
+          after: async (createdUser) => {
+            if (isOwnerEmail(createdUser.email)) {
+              try {
+                await ensureOwnerEntitlementsForUser(createdUser.id);
+              } catch (error) {
+                console.error(
+                  "[auth] Failed to grant owner entitlements",
+                  error
+                );
+              }
+            }
+          },
+        },
+      },
+      session: {
+        create: {
+          after: async (newSession) => {
+            const db = createDb();
+            const [row] = await db
+              .select({ email: schema.user.email })
+              .from(schema.user)
+              .where(eq(schema.user.id, newSession.userId))
+              .limit(1);
+            if (isOwnerEmail(row?.email)) {
+              try {
+                await ensureOwnerEntitlementsForUser(newSession.userId);
+              } catch (error) {
+                console.error(
+                  "[auth] Failed to refresh owner entitlements on session",
+                  error
+                );
+              }
+            }
+          },
+        },
+      },
+    },
   });
 }
 

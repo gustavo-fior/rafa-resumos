@@ -1,7 +1,7 @@
 import { db } from "@rafa-resumos/db";
 import { entitlements, orders, products } from "@rafa-resumos/db/schema/app";
 import { user } from "@rafa-resumos/db/schema/auth";
-import { countDistinct, eq, sql } from "drizzle-orm";
+import { and, countDistinct, desc, eq, isNull, sql } from "drizzle-orm";
 
 export type AdminStats = {
   averageOrderCents: number;
@@ -87,4 +87,76 @@ export async function getAdminStats(): Promise<AdminStats> {
     totalRevenueCents,
     totalUserCount,
   };
+}
+
+export type AdminUserProduct = {
+  id: string;
+  title: string;
+  slug: string;
+  iconEmoji: string | null;
+  iconUrl: string | null;
+  priceCents: number;
+  grantedAt: Date;
+};
+
+export type AdminUserListItem = {
+  id: string;
+  name: string;
+  email: string;
+  image: string | null;
+  createdAt: Date;
+  products: AdminUserProduct[];
+};
+
+export async function listAdminUsers(): Promise<AdminUserListItem[]> {
+  const rows = await db
+    .select({
+      userId: user.id,
+      userName: user.name,
+      userEmail: user.email,
+      userImage: user.image,
+      userCreatedAt: user.createdAt,
+      productId: products.id,
+      productTitle: products.title,
+      productSlug: products.slug,
+      productIconEmoji: products.iconEmoji,
+      productIconUrl: products.iconUrl,
+      productPriceCents: products.priceCents,
+      grantedAt: entitlements.grantedAt,
+    })
+    .from(user)
+    .leftJoin(
+      entitlements,
+      and(eq(entitlements.userId, user.id), isNull(entitlements.revokedAt))
+    )
+    .leftJoin(products, eq(products.id, entitlements.productId))
+    .orderBy(desc(user.createdAt), desc(entitlements.grantedAt));
+
+  const byUserId = new Map<string, AdminUserListItem>();
+  for (const row of rows) {
+    let entry = byUserId.get(row.userId);
+    if (!entry) {
+      entry = {
+        id: row.userId,
+        name: row.userName,
+        email: row.userEmail,
+        image: row.userImage,
+        createdAt: row.userCreatedAt,
+        products: [],
+      };
+      byUserId.set(row.userId, entry);
+    }
+    if (row.productId && row.productTitle && row.productSlug && row.grantedAt) {
+      entry.products.push({
+        id: row.productId,
+        title: row.productTitle,
+        slug: row.productSlug,
+        iconEmoji: row.productIconEmoji,
+        iconUrl: row.productIconUrl,
+        priceCents: row.productPriceCents ?? 0,
+        grantedAt: row.grantedAt,
+      });
+    }
+  }
+  return Array.from(byUserId.values());
 }

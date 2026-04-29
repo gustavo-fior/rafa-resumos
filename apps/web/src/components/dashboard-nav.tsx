@@ -6,8 +6,8 @@ import type { Route } from "next";
 import { usePathname, useRouter } from "next/navigation";
 
 const links = [
-  { href: "/dashboard/library", label: "Biblioteca", icon: Album },
-  { href: "/dashboard/store", label: "Catálogo", icon: Store },
+  { href: "/dashboard/library", label: "Sua Biblioteca", icon: Album },
+  { href: "/", label: "Catálogo", icon: Store },
 ] as const;
 
 export default function DashboardNav() {
@@ -15,7 +15,9 @@ export default function DashboardNav() {
   const router = useRouter();
 
   const activeHref =
-    links.find(({ href }) => pathname.startsWith(href))?.href ?? links[0].href;
+    links.find(({ href }) =>
+      href === "/" ? pathname === "/" : pathname.startsWith(href)
+    )?.href ?? links[0].href;
 
   return (
     <AnimatedTabs

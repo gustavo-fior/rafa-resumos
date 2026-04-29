@@ -1,4 +1,7 @@
-import { getAdminStats } from "@rafa-resumos/api/services/admin-stats";
+import {
+  getAdminStats,
+  listAdminUsers,
+} from "@rafa-resumos/api/services/admin-stats";
 
 import { isAdminAuthed } from "@/lib/admin-auth";
 
@@ -18,11 +21,14 @@ export default async function AdminPage() {
     );
   }
 
-  const stats = await getAdminStats();
+  const [stats, users] = await Promise.all([
+    getAdminStats(),
+    listAdminUsers(),
+  ]);
 
   return (
     <main className="mx-auto w-full max-w-4xl px-4 pb-16 pt-8 md:px-0">
-      <AdminDashboard stats={stats} />
+      <AdminDashboard stats={stats} users={users} />
     </main>
   );
 }

@@ -1,6 +1,8 @@
 "use server";
 
 import { syncNotionProducts } from "@rafa-resumos/api/services/notion-sync";
+import { db } from "@rafa-resumos/db";
+import { sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -28,6 +30,31 @@ export async function loginAdminAction(
 export async function logoutAdminAction() {
   await revokeAdminCookie();
   redirect("/admin");
+}
+
+export async function resetFinanceStatsAction(password: string) {
+  if (!(await isAdminAuthed())) {
+    return { error: "Sessão expirada. Entre novamente." };
+  }
+
+  if (!verifyAdminPassword(password)) {
+    return { error: "Senha incorreta." };
+  }
+
+  try {
+    await db.execute(
+      sql`TRUNCATE TABLE "webhook_event", "entitlement", "order" RESTART IDENTITY CASCADE`
+    );
+    revalidatePath("/admin");
+    return { ok: true as const };
+  } catch (error) {
+    return {
+      error:
+        error instanceof Error
+          ? error.message
+          : "Falha ao apagar pedidos e liberações.",
+    };
+  }
 }
 
 export async function syncNotionAction() {

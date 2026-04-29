@@ -50,7 +50,7 @@ export default function UserMenu() {
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" sideOffset={12}>
+      <DropdownMenuContent align="end" sideOffset={12} className="w-fit">
         <DropdownMenuGroup>
           <DropdownMenuLabel className="text-xs font-normal text-[#9b9a97]">
             {session.user.email}

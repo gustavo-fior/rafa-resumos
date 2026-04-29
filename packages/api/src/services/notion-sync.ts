@@ -1,3 +1,4 @@
+import { ensureOwnerEntitlements } from "@rafa-resumos/auth/owner-access";
 import { db } from "@rafa-resumos/db";
 import {
   products,
@@ -713,6 +714,14 @@ export async function syncNotionProducts() {
         }
       );
     }
+  }
+
+  try {
+    await ensureOwnerEntitlements();
+  } catch (error) {
+    logSync("warn", "Failed to refresh owner entitlements after sync.", {
+      error: error instanceof Error ? error.message : "unknown error",
+    });
   }
 
   logSync("info", "Finished syncing Notion content.", {
