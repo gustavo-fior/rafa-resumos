@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Lora } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 
 import "../index.css";
 import Header from "@/components/header";
@@ -38,6 +39,7 @@ export default function RootLayout({
             <Footer />
           </div>
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
