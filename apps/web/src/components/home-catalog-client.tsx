@@ -1,6 +1,5 @@
 "use client";
 
-import { AnimatedTabs } from "@rafa-resumos/ui/components/animated-tabs";
 import {
   InputGroup,
   InputGroupAddon,
@@ -11,7 +10,6 @@ import { useMemo, useState } from "react";
 
 import ProductCard from "@/components/product-card";
 import SubjectCard from "@/components/subject-card";
-import { stripLeadingEmoji } from "@/lib/utils";
 import { Button } from "@rafa-resumos/ui/components/button";
 
 type CatalogSubject = {
@@ -64,21 +62,6 @@ export default function HomeCatalogClient({
 
   const hasFilters = Boolean(activeCategory || activeSubject || search.trim());
 
-  const { availableSubjects, subjectCategoryBySlug } = useMemo(() => {
-    const bySlug = new Map<string, CatalogSubject>();
-    const categoryBySlug = new Map<string, string>();
-    for (const category of categoryValues) {
-      for (const subject of subjectsByCategory[category] ?? []) {
-        bySlug.set(subject.slug, subject);
-        categoryBySlug.set(subject.slug, category);
-      }
-    }
-    return {
-      availableSubjects: [...bySlug.values()],
-      subjectCategoryBySlug: categoryBySlug,
-    };
-  }, [categoryValues, subjectsByCategory]);
-
   const filteredSections = useMemo(() => {
     const categoriesToRender = activeCategory
       ? [activeCategory]
@@ -129,14 +112,6 @@ export default function HomeCatalogClient({
     subjectsByCategory,
   ]);
 
-  const subjectTabs = [
-    { label: "Tudo", value: "__all-subjects__" },
-    ...availableSubjects.map((subject) => ({
-      label: stripLeadingEmoji(subject.name),
-      value: subject.slug,
-    })),
-  ];
-
   return (
     <>
       <section className="mt-8 space-y-6">
@@ -156,22 +131,6 @@ export default function HomeCatalogClient({
             placeholder="Buscar por título ou assunto"
           />
         </InputGroup>
-
-        <div className="overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <AnimatedTabs
-            tabs={subjectTabs}
-            value={activeSubject ?? "__all-subjects__"}
-            onValueChange={(value) => {
-              if (value === "__all-subjects__") {
-                setActiveCategory(undefined);
-                setActiveSubject(undefined);
-                return;
-              }
-              setActiveCategory(subjectCategoryBySlug.get(value));
-              setActiveSubject(value);
-            }}
-          />
-        </div>
       </section>
 
       <div className="mt-10 space-y-10">
