@@ -115,6 +115,11 @@ export default function HomeCatalogClient({
   return (
     <>
       <section className="mt-8 space-y-6">
+        <p className="text-sm text-[#37352f] mb-4">
+          Olá estudante da área da saúde! Meu nome é Rafa, sou estudante de
+          medicina na PUCPR. Aqui disponibilizo meus resumos, que fiz ao longo
+          dos meus estudos na faculdade!
+        </p>
         <InputGroup
           style={{
             boxShadow:
