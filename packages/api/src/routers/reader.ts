@@ -21,13 +21,6 @@ export const readerRouter = router({
         });
       }
 
-      if (!product.hasAccess) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You do not have access to this resumo yet.",
-        });
-      }
-
       return product;
     }),
 });

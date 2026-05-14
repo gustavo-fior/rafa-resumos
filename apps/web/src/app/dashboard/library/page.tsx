@@ -1,12 +1,12 @@
-import { listLibraryProducts } from "@rafa-resumos/api/services/catalog";
-
 import ProductCard from "@/components/product-card";
 import { stripLeadingEmoji } from "@/lib/utils";
 import { requireSession } from "@/lib/session";
+import { getServerTrpc } from "@/utils/trpc-server";
 
 export default async function DashboardLibraryPage() {
-  const session = await requireSession();
-  const allProducts = await listLibraryProducts(session.user.id);
+  await requireSession();
+  const trpc = await getServerTrpc();
+  const allProducts = await trpc.library.listMine.query();
   const products = allProducts.filter(
     (product) => product.category !== "utilidades"
   );

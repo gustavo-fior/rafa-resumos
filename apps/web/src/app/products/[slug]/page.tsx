@@ -1,7 +1,6 @@
-import { getActivePurchaseForProductSlug } from "@rafa-resumos/api/services/purchase";
-import { getPublishedProductBySlug } from "@rafa-resumos/api/services/catalog";
 import { Button } from "@rafa-resumos/ui/components/button";
 import { Card, CardContent } from "@rafa-resumos/ui/components/card";
+import { TRPCClientError } from "@trpc/client";
 import { ArrowLeft } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
@@ -10,6 +9,7 @@ import { notFound } from "next/navigation";
 import ClaimFreeButton from "@/components/claim-free-button";
 import PurchasePanel from "@/components/purchase-panel";
 import { getOptionalSession } from "@/lib/session";
+import { getServerTrpc } from "@/utils/trpc-server";
 
 const categoryLabels: Record<string, string> = {
   medicina: "Resumos",
@@ -41,12 +41,26 @@ export default async function ProductPage({
 }) {
   const { slug } = await params;
   const session = await getOptionalSession();
-  const [product, activePurchase] = await Promise.all([
-    getPublishedProductBySlug(slug, session?.user.id),
-    session?.user
-      ? getActivePurchaseForProductSlug(session.user.id, slug)
-      : Promise.resolve(null),
-  ]);
+  const trpc = await getServerTrpc();
+
+  let product: Awaited<ReturnType<typeof trpc.catalog.getBySlug.query>>;
+  let activePurchase: Awaited<
+    ReturnType<typeof trpc.purchase.getActiveForSlug.query>
+  > | null;
+
+  try {
+    [product, activePurchase] = await Promise.all([
+      trpc.catalog.getBySlug.query({ slug }),
+      session?.user
+        ? trpc.purchase.getActiveForSlug.query({ slug })
+        : Promise.resolve(null),
+    ]);
+  } catch (error) {
+    if (error instanceof TRPCClientError && error.data?.code === "NOT_FOUND") {
+      notFound();
+    }
+    throw error;
+  }
 
   if (!product) {
     notFound();

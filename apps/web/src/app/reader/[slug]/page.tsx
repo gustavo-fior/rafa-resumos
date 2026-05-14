@@ -1,4 +1,4 @@
-import { getReaderProduct } from "@rafa-resumos/api/services/catalog";
+import { TRPCClientError } from "@trpc/client";
 import { ArrowLeft } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
@@ -6,6 +6,8 @@ import { notFound } from "next/navigation";
 
 import MarkdownRenderer from "@/components/markdown-renderer";
 import { requireSession } from "@/lib/session";
+import { getServerTrpc } from "@/utils/trpc-server";
+
 
 const categoryLabels: Record<string, string> = {
   medicina: "Resumos",
@@ -18,11 +20,17 @@ export default async function ReaderPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const session = await requireSession();
-  const product = await getReaderProduct(slug, session.user.id);
+  await requireSession();
+  const trpc = await getServerTrpc();
 
-  if (!product) {
-    notFound();
+  let product: Awaited<ReturnType<typeof trpc.reader.getBySlug.query>>;
+  try {
+    product = await trpc.reader.getBySlug.query({ slug });
+  } catch (error) {
+    if (error instanceof TRPCClientError && error.data?.code === "NOT_FOUND") {
+      notFound();
+    }
+    throw error;
   }
 
   if (!product.hasAccess) {

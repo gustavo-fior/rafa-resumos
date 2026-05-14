@@ -6,6 +6,7 @@ import { publicProcedure, router } from "../index";
 import {
   getPublishedProductBySlug,
   listPublishedProducts,
+  listPublishedSubjects,
 } from "../services/catalog";
 
 export const catalogRouter = router({
@@ -43,4 +44,13 @@ export const catalogRouter = router({
     .query(({ ctx, input }) =>
       listPublishedProducts(input, ctx.session?.user.id)
     ),
+  listSubjects: publicProcedure
+    .input(
+      z
+        .object({
+          category: z.enum(productCategory.enumValues).optional(),
+        })
+        .optional()
+    )
+    .query(({ input }) => listPublishedSubjects(input?.category)),
 });

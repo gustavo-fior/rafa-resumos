@@ -5,11 +5,21 @@ import { protectedProcedure, router } from "../index";
 import {
   claimFreeProduct,
   createPixPurchase,
+  getActivePurchaseForProductSlug,
   getPurchaseStatus,
   simulatePixPurchase,
 } from "../services/purchase";
 
 export const purchaseRouter = router({
+  getActiveForSlug: protectedProcedure
+    .input(
+      z.object({
+        slug: z.string().min(1),
+      }),
+    )
+    .query(({ ctx, input }) =>
+      getActivePurchaseForProductSlug(ctx.session.user.id, input.slug),
+    ),
   claimFree: protectedProcedure
     .input(
       z.object({

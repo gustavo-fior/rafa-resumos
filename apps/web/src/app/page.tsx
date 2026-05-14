@@ -1,34 +1,28 @@
-import {
-  categoryValues,
-  listPublishedProducts,
-  listPublishedSubjects,
-} from "@rafa-resumos/api/services/catalog";
 import HomeCatalogClient from "@/components/home-catalog-client";
-import { getOptionalSession } from "@/lib/session";
+import { getServerTrpc } from "@/utils/trpc-server";
 
-const categoryLabels: Record<(typeof categoryValues)[number], string> = {
+type CategoryValue = "medicina" | "utilidades";
+
+const categoryValues: CategoryValue[] = ["medicina", "utilidades"];
+
+const categoryLabels: Record<CategoryValue, string> = {
   medicina: "Resumos",
   utilidades: "Utilidades",
 };
 
 export default async function Home() {
-  const session = await getOptionalSession();
+  const trpc = await getServerTrpc();
 
   const [initialSections, subjectsByCategory] = await Promise.all([
     Promise.all(
       categoryValues.map(async (category) => {
-        const products = await listPublishedProducts(
-          {
-            category,
-          },
-          session?.user.id
-        );
+        const products = await trpc.catalog.listPublished.query({ category });
         return { category, products };
       })
     ),
     Promise.all(
       categoryValues.map(async (category) => {
-        const subjects = await listPublishedSubjects(category);
+        const subjects = await trpc.catalog.listSubjects.query({ category });
         return [category, subjects] as const;
       })
     ).then((entries) => Object.fromEntries(entries)),
