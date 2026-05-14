@@ -5,10 +5,10 @@ import postgres from "postgres";
 import * as schema from "./schema";
 
 const client = postgres(env.DATABASE_URL, {
-  prepare: false,
   ssl: "require",
-  max: 5,
-  idle_timeout: 20,
+  max: 10,
+  idle_timeout: 30,
+  max_lifetime: 60 * 30,
   connect_timeout: 10,
 });
 
