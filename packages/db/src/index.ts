@@ -6,8 +6,9 @@ import * as schema from "./schema";
 
 const client = postgres(env.DATABASE_URL, {
   ssl: "require",
-  max: 10,
-  idle_timeout: 30,
+  prepare: false,
+  max: 2,
+  idle_timeout: 10,
   max_lifetime: 60 * 30,
   connect_timeout: 10,
 });
