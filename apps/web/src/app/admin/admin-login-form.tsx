@@ -8,8 +8,13 @@ import { useActionState } from "react";
 
 import { loginAdminAction } from "./actions";
 
-export default function AdminLoginForm() {
+export default function AdminLoginForm({
+  initialError,
+}: {
+  initialError?: string;
+}) {
   const [state, formAction, isPending] = useActionState(loginAdminAction, null);
+  const error = state?.error ?? initialError;
 
   return (
     <div className="w-full">
@@ -39,8 +44,8 @@ export default function AdminLoginForm() {
             type="password"
             required
           />
-          {state?.error ? (
-            <p className="text-xs text-[#eb5757]">{state.error}</p>
+          {error ? (
+            <p className="text-xs text-[#eb5757]">{error}</p>
           ) : null}
         </div>
 

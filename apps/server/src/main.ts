@@ -72,4 +72,12 @@ app.get("/", (c) => {
   return c.text("OK");
 });
 
-export default app;
+export { app };
+
+// Bind explicitly to 0.0.0.0 so Fly's proxy (and any container runtime)
+// can reach it — Bun's implicit default-export server binds to localhost.
+export default {
+  fetch: app.fetch,
+  hostname: "0.0.0.0",
+  port: Number(process.env.PORT) || 3000,
+};

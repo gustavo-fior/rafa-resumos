@@ -1,3 +1,4 @@
+import { adminRouter } from "./admin";
 import { catalogRouter } from "./catalog";
 import { libraryRouter } from "./library";
 import { purchaseRouter } from "./purchase";
@@ -5,6 +6,7 @@ import { readerRouter } from "./reader";
 import { protectedProcedure, publicProcedure, router } from "../index";
 
 export const appRouter = router({
+  admin: adminRouter,
   catalog: catalogRouter,
   healthCheck: publicProcedure.query(() => {
     return "OK";

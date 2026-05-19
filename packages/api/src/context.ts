@@ -11,6 +11,7 @@ export async function createContext({ context }: CreateContextOptions) {
   });
   return {
     auth: null,
+    adminToken: context.req.header("x-admin-token") ?? null,
     session,
   };
 }

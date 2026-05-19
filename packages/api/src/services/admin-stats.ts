@@ -152,7 +152,12 @@ export async function listAdminUsers(): Promise<AdminUserListItem[]> {
         title: row.productTitle,
         slug: row.productSlug,
         iconEmoji: row.productIconEmoji,
-        iconUrl: row.productIconUrl,
+        // Drop inline base64 data: URIs (some are multi-MB) — the admin list
+        // falls back to iconEmoji. Real remote URLs are kept.
+        iconUrl:
+          row.productIconUrl && !row.productIconUrl.startsWith("data:")
+            ? row.productIconUrl
+            : null,
         priceCents: row.productPriceCents ?? 0,
         grantedAt: row.grantedAt,
       });

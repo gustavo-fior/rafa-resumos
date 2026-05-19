@@ -1,9 +1,11 @@
 "use client";
 
-import type {
-  AdminStats,
-  AdminUserListItem,
-} from "@rafa-resumos/api/services/admin-stats";
+import type { AppRouter } from "@rafa-resumos/api/routers/index";
+import type { inferRouterOutputs } from "@trpc/server";
+
+type RouterOutputs = inferRouterOutputs<AppRouter>;
+type AdminStats = RouterOutputs["admin"]["getStats"];
+type AdminUserListItem = RouterOutputs["admin"]["listUsers"][number];
 import {
   AlertDialog,
   AlertDialogAction,

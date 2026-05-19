@@ -1,0 +1,11 @@
+node_modules
+**/node_modules
+.git
+.next
+.turbo
+**/dist
+tsconfig.tsbuildinfo
+.DS_Store
+.claude
+.agents
+*.log

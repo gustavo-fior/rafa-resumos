@@ -1,8 +1,6 @@
 "use server";
 
-import { syncNotionProducts } from "@rafa-resumos/api/services/notion-sync";
-import { db } from "@rafa-resumos/db";
-import { sql } from "drizzle-orm";
+import { TRPCClientError } from "@trpc/client";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -12,6 +10,7 @@ import {
   revokeAdminCookie,
   verifyAdminPassword,
 } from "@/lib/admin-auth";
+import { getServerTrpc } from "@/utils/trpc-server";
 
 export async function loginAdminAction(
   _state: { error?: string } | null,
@@ -42,17 +41,18 @@ export async function resetFinanceStatsAction(password: string) {
   }
 
   try {
-    await db.execute(
-      sql`TRUNCATE TABLE "webhook_event", "entitlement", "order" RESTART IDENTITY CASCADE`
-    );
+    const trpc = await getServerTrpc();
+    await trpc.admin.resetFinance.mutate();
     revalidatePath("/admin");
     return { ok: true as const };
   } catch (error) {
     return {
       error:
-        error instanceof Error
+        error instanceof TRPCClientError
           ? error.message
-          : "Falha ao apagar pedidos e liberações.",
+          : error instanceof Error
+            ? error.message
+            : "Falha ao apagar pedidos e liberações.",
     };
   }
 }
@@ -62,19 +62,20 @@ export async function syncNotionAction() {
     return { error: "Sessão expirada. Entre novamente." };
   }
 
-  const startedAt = Date.now();
-
   try {
-    await syncNotionProducts();
+    const trpc = await getServerTrpc();
+    const result = await trpc.admin.syncNotion.mutate();
     revalidatePath("/admin");
     revalidatePath("/");
-    return { durationMs: Date.now() - startedAt, ok: true as const };
+    return { durationMs: result.durationMs, ok: true as const };
   } catch (error) {
     return {
       error:
-        error instanceof Error
+        error instanceof TRPCClientError
           ? error.message
-          : "Falha ao sincronizar com o Notion.",
+          : error instanceof Error
+            ? error.message
+            : "Falha ao sincronizar com o Notion.",
     };
   }
 }
