@@ -10,6 +10,7 @@ import { env } from "@rafa-resumos/env/notion";
 import { and, eq, ne } from "drizzle-orm";
 
 import { slugify } from "../lib/slug";
+import { invalidateCatalogCache } from "./catalog";
 
 const NOTION_BASE_URL = "https://api.notion.com/v1";
 const NOTION_VERSION = "2026-03-11";
@@ -723,6 +724,9 @@ export async function syncNotionProducts() {
       error: error instanceof Error ? error.message : "unknown error",
     });
   }
+
+  // Drop the cached catalog so the next read reflects this sync immediately.
+  invalidateCatalogCache();
 
   logSync("info", "Finished syncing Notion content.", {
     processedPages: pages.length,
