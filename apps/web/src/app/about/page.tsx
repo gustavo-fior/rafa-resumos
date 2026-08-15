@@ -13,15 +13,26 @@ export default function AboutPage() {
         <h1 className="font-(family-name:--font-display) text-xl font-semibold text-[#37352f]">
           Olá estudante da área da saúde!
         </h1>
-        <Link
-          href="https://www.linkedin.com/in/rafaela-castan-7a43ab2bb/"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="LinkedIn"
-          className="text-[#9b9a97] transition-colors hover:text-[#37352f]"
-        >
-          <Linkedin className="size-5" />
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="https://www.instagram.com/rafaresumos/"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Instagram"
+            className="text-[#9b9a97] transition-colors hover:text-[#37352f]"
+          >
+            <Instagram className="size-5" />
+          </Link>
+          <Link
+            href="https://www.linkedin.com/in/rafaela-castan-7a43ab2bb/"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="LinkedIn"
+            className="text-[#9b9a97] transition-colors hover:text-[#37352f]"
+          >
+            <Linkedin className="size-5" />
+          </Link>
+        </div>
       </div>
 
       <div className="space-y-5 text-[15px] leading-relaxed text-[#37352f]">
@@ -81,12 +92,12 @@ export default function AboutPage() {
           </Link>
           ) ou pelo meu Instagram (
           <Link
-            href="https://www.instagram.com/rafa_epc_"
+            href="https://www.instagram.com/rafaresumos/"
             target="_blank"
             rel="noreferrer"
             className="underline decoration-[#9b9a97] underline-offset-[3px] transition-colors hover:decoration-[#37352f]"
           >
-            @rafa_epc_
+            @rafaresumos
           </Link>
           ). Será um prazer conversar e trocar ideias!
         </p>
