@@ -117,7 +117,7 @@ export default function HomeCatalogClient({
     <>
       <section className="mt-8 space-y-6">
         <div className="mb-4 flex items-start justify-between gap-3">
-          <p className="text-sm text-[#37352f]">
+          <p className="text-sm text-balance text-[#37352f]">
             Olá estudante da área da saúde! Meu nome é Rafa, sou estudante de
             medicina na PUCPR. Aqui disponibilizo meus resumos, que fiz ao
             longo dos meus estudos na faculdade!
