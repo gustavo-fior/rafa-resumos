@@ -5,7 +5,8 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@rafa-resumos/ui/components/input-group";
-import { Search } from "lucide-react";
+import { Instagram, Linkedin, Search } from "lucide-react";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import ProductCard from "@/components/product-card";
@@ -115,11 +116,33 @@ export default function HomeCatalogClient({
   return (
     <>
       <section className="mt-8 space-y-6">
-        <p className="text-sm text-[#37352f] mb-4">
-          Olá estudante da área da saúde! Meu nome é Rafa, sou estudante de
-          medicina na PUCPR. Aqui disponibilizo meus resumos, que fiz ao longo
-          dos meus estudos na faculdade!
-        </p>
+        <div className="mb-4 flex items-start justify-between gap-3">
+          <p className="text-sm text-[#37352f]">
+            Olá estudante da área da saúde! Meu nome é Rafa, sou estudante de
+            medicina na PUCPR. Aqui disponibilizo meus resumos, que fiz ao
+            longo dos meus estudos na faculdade!
+          </p>
+          <div className="flex shrink-0 items-center gap-3">
+            <Link
+              href="https://www.instagram.com/rafaresumos/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Instagram"
+              className="text-[#9b9a97] transition-colors hover:text-[#37352f]"
+            >
+              <Instagram className="size-5" />
+            </Link>
+            <Link
+              href="https://www.linkedin.com/in/rafaela-castan-7a43ab2bb/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="LinkedIn"
+              className="text-[#9b9a97] transition-colors hover:text-[#37352f]"
+            >
+              <Linkedin className="size-5" />
+            </Link>
+          </div>
+        </div>
         <InputGroup
           style={{
             boxShadow:
