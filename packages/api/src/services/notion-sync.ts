@@ -63,6 +63,7 @@ type NotionIcon =
 type NotionPageResult = {
   icon: NotionIcon | null;
   id: string;
+  in_trash?: boolean;
   last_edited_time: string;
   properties: Record<string, NotionPropertyValue>;
 };
@@ -299,7 +300,6 @@ async function queryAllPages(dataSourceId: string) {
   do {
     const requestBody = {
       page_size: 100,
-      in_trash: false,
       ...(nextCursor ? { start_cursor: nextCursor } : {}),
       result_type: "page" as const,
     };
@@ -311,7 +311,7 @@ async function queryAllPages(dataSourceId: string) {
       }
     );
 
-    pages.push(...response.results);
+    pages.push(...response.results.filter((page) => !page.in_trash));
     nextCursor = response.has_more ? response.next_cursor : null;
   } while (nextCursor);
 
