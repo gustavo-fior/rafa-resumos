@@ -61,6 +61,9 @@ app.post("/webhooks/abacatepay", async (c) => {
 });
 
 // Called by the scheduled GitHub Actions workflow (.github/workflows/sync-notion.yml).
+// A full sync takes ~30s; overlapping runs (e.g. client retries) are rejected.
+let notionSyncInFlight: Promise<void> | null = null;
+
 app.post("/internal/sync-notion", async (c) => {
   const authorization = c.req.header("Authorization") ?? "";
 
@@ -68,13 +71,20 @@ app.post("/internal/sync-notion", async (c) => {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
+  if (notionSyncInFlight) {
+    return c.json({ ok: false, error: "Sync already in progress" }, 409);
+  }
+
   const startedAt = Date.now();
+  notionSyncInFlight = syncNotionProducts();
 
   try {
-    await syncNotionProducts();
+    await notionSyncInFlight;
   } catch (error) {
     console.error("[sync-notion] failed", error);
     return c.json({ ok: false, error: "Sync failed" }, 500);
+  } finally {
+    notionSyncInFlight = null;
   }
 
   return c.json({ ok: true, durationMs: Date.now() - startedAt });
@@ -102,4 +112,6 @@ export default {
   fetch: app.fetch,
   hostname: "0.0.0.0",
   port: Number(process.env.PORT) || 3000,
+  // Bun defaults to 10s, which cuts off long requests like the Notion sync.
+  idleTimeout: 120,
 };
