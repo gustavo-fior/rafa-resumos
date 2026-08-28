@@ -6,6 +6,7 @@ import { user } from "./auth";
 export const productCategory = pgEnum("product_category", [
   "medicina",
   "utilidades",
+  "emergencia",
 ]);
 
 export const productStatus = pgEnum("product_status", ["draft", "published", "archived"]);

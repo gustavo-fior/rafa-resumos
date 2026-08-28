@@ -491,7 +491,7 @@ function parseCategory(
   fieldMap: ResolvedNotionFieldMap
 ) {
   const value = slugify(getSelect(page, fieldMap.category)) as ProductCategory;
-  return ["medicina", "utilidades"].includes(value) ? value : null;
+  return ["medicina", "utilidades", "emergencia"].includes(value) ? value : null;
 }
 
 function parseStatus(page: NotionPageResult, fieldMap: ResolvedNotionFieldMap) {

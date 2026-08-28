@@ -94,6 +94,19 @@ type Snapshot = {
   fetchedAt: number;
 };
 
+// "emergencia" content is public and lives exclusively under /emergencia. It
+// must never surface in the regular catalog, product pages, library, or
+// reader, so every non-emergency read goes through `regularProducts()`.
+const EMERGENCY_CATEGORY: ProductCategory = "emergencia";
+
+function isEmergency(row: { category: ProductCategory }) {
+  return row.category === EMERGENCY_CATEGORY;
+}
+
+function regularProducts(snap: Snapshot) {
+  return snap.products.filter((row) => !isEmergency(row));
+}
+
 let snapshot: Snapshot | null = null;
 let inFlight: Promise<Snapshot> | null = null;
 // Bumped by invalidateCatalogCache() so an in-flight load started before an
@@ -114,6 +127,9 @@ async function loadSnapshot(): Promise<Snapshot> {
 
   const subjectMap = new Map<string, SubjectSnapshot>();
   for (const row of rows) {
+    if (row.category === EMERGENCY_CATEGORY) {
+      continue;
+    }
     let entry = subjectMap.get(row.subjectId);
     if (!entry) {
       entry = {
@@ -203,7 +219,7 @@ export async function listPublishedProducts(
     getOwnedProductIds(userId),
   ]);
 
-  let rows = snap.products;
+  let rows = regularProducts(snap);
 
   if (filters.category) {
     rows = rows.filter((row) => row.category === filters.category);
@@ -251,8 +267,24 @@ export async function getPublishedProductBySlug(slug: string, userId?: string) {
     getOwnedProductIds(userId),
   ]);
 
-  const row = snap.products.find((product) => product.slug === slug);
+  const row = regularProducts(snap).find((product) => product.slug === slug);
   return row ? withAccess(row, ownedIds) : null;
+}
+
+export async function listEmergencyProducts() {
+  const snap = await getSnapshot();
+  return snap.products.filter(isEmergency).map((row) => ({
+    ...row,
+    hasAccess: true,
+  }));
+}
+
+export async function getEmergencyProductBySlug(slug: string) {
+  const snap = await getSnapshot();
+  const row = snap.products.find(
+    (product) => isEmergency(product) && product.slug === slug
+  );
+  return row ? { ...row, hasAccess: true } : null;
 }
 
 export async function listLibraryProducts(userId: string) {
@@ -261,7 +293,7 @@ export async function listLibraryProducts(userId: string) {
     getOwnedProductIds(userId),
   ]);
 
-  return snap.products
+  return regularProducts(snap)
     .filter((row) => ownedIds.has(row.id))
     .map((row) => withAccess(row, ownedIds));
 }
@@ -274,7 +306,7 @@ export async function getReaderProduct(slug: string, userId: string) {
 
   const cached = snap.products.find((product) => product.slug === slug);
   if (cached) {
-    return withAccess(cached, ownedIds);
+    return isEmergency(cached) ? null : withAccess(cached, ownedIds);
   }
 
   // The snapshot only holds published products. The reader historically also
@@ -288,7 +320,11 @@ export async function getReaderProduct(slug: string, userId: string) {
     .limit(1)
     .then((result) => result[0]);
 
-  return row ? withAccess(mapCatalogRow(row), ownedIds) : null;
+  if (!row || row.category === EMERGENCY_CATEGORY) {
+    return null;
+  }
+
+  return withAccess(mapCatalogRow(row), ownedIds);
 }
 
 export async function getDashboardSummary(userId: string) {
@@ -299,7 +335,7 @@ export async function getDashboardSummary(userId: string) {
 
   return {
     libraryCount: ownedIds.size,
-    publishedCount: snap.products.length,
+    publishedCount: regularProducts(snap).length,
   };
 }
 
