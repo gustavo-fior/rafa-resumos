@@ -5,10 +5,12 @@ import {
   type AbacatepayTransparentWebhookPayload,
   verifyAbacatepayWebhookSignature,
 } from "@rafa-resumos/api/services/abacatepay";
+import { syncNotionProducts } from "@rafa-resumos/api/services/notion-sync";
 import { processAbacatepayWebhook } from "@rafa-resumos/api/services/purchase";
 import { auth } from "@rafa-resumos/auth";
 import { env as abacatepayEnv } from "@rafa-resumos/env/abacatepay";
 import { env as authEnv } from "@rafa-resumos/env/auth";
+import { env as cronEnv } from "@rafa-resumos/env/cron";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
@@ -56,6 +58,26 @@ app.post("/webhooks/abacatepay", async (c) => {
   await processAbacatepayWebhook(payload, rawBody);
 
   return c.json({ received: true });
+});
+
+// Called by the scheduled GitHub Actions workflow (.github/workflows/sync-notion.yml).
+app.post("/internal/sync-notion", async (c) => {
+  const authorization = c.req.header("Authorization") ?? "";
+
+  if (authorization !== `Bearer ${cronEnv.CRON_SECRET}`) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  const startedAt = Date.now();
+
+  try {
+    await syncNotionProducts();
+  } catch (error) {
+    console.error("[sync-notion] failed", error);
+    return c.json({ ok: false, error: "Sync failed" }, 500);
+  }
+
+  return c.json({ ok: true, durationMs: Date.now() - startedAt });
 });
 
 app.use(

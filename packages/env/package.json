@@ -8,6 +8,7 @@
     "./db": "./src/db.ts",
     "./admin": "./src/admin.ts",
     "./notion": "./src/notion.ts",
+    "./cron": "./src/cron.ts",
     "./abacatepay": "./src/abacatepay.ts",
     "./web": "./src/web.ts"
   },
