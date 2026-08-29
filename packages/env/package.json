@@ -9,6 +9,7 @@
     "./admin": "./src/admin.ts",
     "./notion": "./src/notion.ts",
     "./cron": "./src/cron.ts",
+    "./r2": "./src/r2.ts",
     "./abacatepay": "./src/abacatepay.ts",
     "./web": "./src/web.ts"
   },

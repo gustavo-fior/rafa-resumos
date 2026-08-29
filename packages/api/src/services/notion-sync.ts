@@ -11,6 +11,7 @@ import { and, eq, ne } from "drizzle-orm";
 
 import { slugify } from "../lib/slug";
 import { invalidateCatalogCache } from "./catalog";
+import { rehostMarkdownImages } from "./notion-assets";
 
 const NOTION_BASE_URL = "https://api.notion.com/v1";
 const NOTION_VERSION = "2026-03-11";
@@ -684,7 +685,19 @@ export async function syncNotionProducts() {
     }
 
     try {
-      const markdown = await retrieveMarkdownTree(page.id);
+      const rawMarkdown = await retrieveMarkdownTree(page.id);
+      const { markdown, rehosted } = await rehostMarkdownImages(
+        page.id,
+        rawMarkdown
+      );
+
+      if (rehosted > 0) {
+        logSync("info", "Rehosted Notion images to R2.", {
+          pageId: page.id,
+          rehosted,
+          slug,
+        });
+      }
 
       if (!markdown.trim()) {
         logSync("warn", "Synced a page with an empty body.", {

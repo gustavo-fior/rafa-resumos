@@ -14,6 +14,7 @@ import { env as cronEnv } from "@rafa-resumos/env/cron";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
+import { stream } from "hono/streaming";
 
 const app = new Hono();
 
@@ -61,10 +62,12 @@ app.post("/webhooks/abacatepay", async (c) => {
 });
 
 // Called by the scheduled GitHub Actions workflow (.github/workflows/sync-notion.yml).
-// A full sync takes ~30s; overlapping runs (e.g. client retries) are rejected.
+// A full sync can take minutes (it copies Notion images to R2). The machine is
+// scale-to-zero, so the request must stay open for the whole run — Fly only
+// keeps a machine alive while it has in-flight requests — hence the heartbeat.
 let notionSyncInFlight: Promise<void> | null = null;
 
-app.post("/internal/sync-notion", async (c) => {
+app.post("/internal/sync-notion", (c) => {
   const authorization = c.req.header("Authorization") ?? "";
 
   if (authorization !== `Bearer ${cronEnv.CRON_SECRET}`) {
@@ -76,18 +79,27 @@ app.post("/internal/sync-notion", async (c) => {
   }
 
   const startedAt = Date.now();
-  notionSyncInFlight = syncNotionProducts();
-
-  try {
-    await notionSyncInFlight;
-  } catch (error) {
-    console.error("[sync-notion] failed", error);
-    return c.json({ ok: false, error: "Sync failed" }, 500);
-  } finally {
+  const run = (notionSyncInFlight = syncNotionProducts().finally(() => {
     notionSyncInFlight = null;
-  }
+  }));
 
-  return c.json({ ok: true, durationMs: Date.now() - startedAt });
+  return stream(c, async (body) => {
+    const heartbeat = setInterval(() => {
+      body.write(".").catch(() => undefined);
+    }, 5_000);
+
+    try {
+      await run;
+      await body.write(
+        `\n${JSON.stringify({ ok: true, durationMs: Date.now() - startedAt })}\n`
+      );
+    } catch (error) {
+      console.error("[sync-notion] failed", error);
+      await body.write(`\n${JSON.stringify({ ok: false, error: "Sync failed" })}\n`);
+    } finally {
+      clearInterval(heartbeat);
+    }
+  });
 });
 
 app.use(

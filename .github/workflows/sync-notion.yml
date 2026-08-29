@@ -2,7 +2,7 @@ name: Sync Notion
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "0 * * * *"
   workflow_dispatch:
 
 concurrency:
@@ -12,12 +12,16 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 30
     steps:
       - name: Call sync endpoint
+        # The server streams a heartbeat and ends with a JSON line; the request
+        # stays open for the whole sync. Fail the job if the last line isn't ok.
         run: |
-          curl --fail-with-body --silent --show-error \
+          OUT=$(curl --silent --show-error --no-buffer \
             --retry 2 --retry-delay 15 --retry-connrefused \
-            --max-time 180 \
+            --max-time 1700 \
             -X POST "${{ secrets.SERVER_URL }}/internal/sync-notion" \
-            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}")
+          echo "$OUT" | tail -n 1
+          echo "$OUT" | tail -n 1 | grep -q '"ok":true'
