@@ -210,6 +210,14 @@ function withAccess(
   return { ...row, hasAccess: ownedIds.has(row.id) };
 }
 
+// List endpoints must never ship the full markdown body: a single category
+// list was ~7 MB on the wire, which dominated every page load. Detail reads
+// (getBySlug / reader) keep the full row.
+function toListItem<T extends { contentMarkdown: unknown }>(row: T) {
+  const { contentMarkdown: _content, ...rest } = row;
+  return rest;
+}
+
 export async function listPublishedProducts(
   filters: CatalogFilters = {},
   userId?: string
@@ -238,7 +246,7 @@ export async function listPublishedProducts(
     );
   }
 
-  let result = rows.map((row) => withAccess(row, ownedIds));
+  let result = rows.map((row) => toListItem(withAccess(row, ownedIds)));
 
   if (filters.excludeOwned && userId) {
     result = result.filter((row) => !row.hasAccess);
@@ -273,10 +281,9 @@ export async function getPublishedProductBySlug(slug: string, userId?: string) {
 
 export async function listEmergencyProducts() {
   const snap = await getSnapshot();
-  return snap.products.filter(isEmergency).map((row) => ({
-    ...row,
-    hasAccess: true,
-  }));
+  return snap.products
+    .filter(isEmergency)
+    .map((row) => toListItem({ ...row, hasAccess: true }));
 }
 
 export async function getEmergencyProductBySlug(slug: string) {
@@ -295,7 +302,7 @@ export async function listLibraryProducts(userId: string) {
 
   return regularProducts(snap)
     .filter((row) => ownedIds.has(row.id))
-    .map((row) => withAccess(row, ownedIds));
+    .map((row) => toListItem(withAccess(row, ownedIds)));
 }
 
 export async function getReaderProduct(slug: string, userId: string) {

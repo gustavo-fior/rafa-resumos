@@ -6,9 +6,11 @@ export type CreateContextOptions = {
 };
 
 export async function createContext({ context }: CreateContextOptions) {
-  const session = await auth.api.getSession({
-    headers: context.req.raw.headers,
-  });
+  // Skip the session lookup (a DB round-trip) for anonymous requests: without
+  // a cookie header there is nothing to resolve.
+  const session = context.req.header("cookie")
+    ? await auth.api.getSession({ headers: context.req.raw.headers })
+    : null;
   return {
     auth: null,
     adminToken: context.req.header("x-admin-token") ?? null,

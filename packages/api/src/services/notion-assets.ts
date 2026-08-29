@@ -175,3 +175,22 @@ export async function rehostMarkdownImages(pageId: string, markdown: string) {
 
   return { markdown: rewritten, rehosted: replacements.size };
 }
+
+/**
+ * Copies a page icon (Notion upload, custom emoji, or built-in icon) into R2
+ * and returns its permanent public URL. Icons used to be stored as base64 data
+ * URIs in the database, which bloated every catalog listing (one SVG icon was
+ * 3 MB); a URL keeps the listing tiny and lets the browser cache the image.
+ */
+export async function rehostIcon(pageId: string, sourceUrl: string): Promise<string | null> {
+  if (isAlreadyHosted(sourceUrl)) return sourceUrl;
+  try {
+    return await copyToBucket(pageId, sourceUrl);
+  } catch (error) {
+    log("warn", "Could not rehost icon; skipping icon for this page.", {
+      pageId,
+      error: error instanceof Error ? error.message : "unknown error",
+    });
+    return null;
+  }
+}

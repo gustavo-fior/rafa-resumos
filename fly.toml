@@ -1,5 +1,5 @@
 # Fly.io config for the Hono backend.
-# One persistent machine (scale-to-zero when idle) => one stable DB pool.
+# One persistent machine, always on => no cold start on first visit.
 app = "rafa-resumos-server"
 primary_region = "gru" # São Paulo — closest to users and to Supabase (sa-east-1)
 
@@ -11,7 +11,7 @@ primary_region = "gru" # São Paulo — closest to users and to Supabase (sa-eas
   force_https = true
   auto_stop_machines = "stop"
   auto_start_machines = true
-  min_machines_running = 0
+  min_machines_running = 1
   processes = ["app"]
 
   [http_service.concurrency]

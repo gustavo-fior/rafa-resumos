@@ -11,7 +11,7 @@ import { and, eq, ne } from "drizzle-orm";
 
 import { slugify } from "../lib/slug";
 import { invalidateCatalogCache } from "./catalog";
-import { rehostMarkdownImages } from "./notion-assets";
+import { rehostIcon, rehostMarkdownImages } from "./notion-assets";
 
 const NOTION_BASE_URL = "https://api.notion.com/v1";
 const NOTION_VERSION = "2026-03-11";
@@ -419,35 +419,6 @@ function getNumber(page: NotionPageResult, key: string) {
   return property?.type === "number" ? property.number ?? 0 : 0;
 }
 
-async function fetchAsDataUri(url: string): Promise<string | null> {
-  try {
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      logSync("warn", "Could not download icon for base64 conversion.", {
-        status: response.status,
-        url,
-      });
-      return null;
-    }
-
-    const contentType = response.headers.get("content-type") ?? "image/png";
-    const buffer = await response.arrayBuffer();
-    const base64 = Buffer.from(buffer).toString("base64");
-    return `data:${contentType};base64,${base64}`;
-  } catch (error) {
-    logSync(
-      "warn",
-      "Icon download threw an error. Skipping icon for this page.",
-      {
-        error: error instanceof Error ? error.message : "unknown error",
-        url,
-      }
-    );
-    return null;
-  }
-}
-
 async function parseIcon(
   icon: NotionIcon | null,
   pageId?: string
@@ -475,8 +446,8 @@ async function parseIcon(
       return { iconEmoji: null, iconUrl: null };
     }
 
-    const dataUri = await fetchAsDataUri(sourceUrl);
-    return { iconEmoji: null, iconUrl: dataUri };
+    const iconUrl = await rehostIcon(pageId ?? "shared", sourceUrl);
+    return { iconEmoji: null, iconUrl };
   } catch (error) {
     logSync("warn", "parseIcon threw — skipping icon for this page.", {
       pageId,
