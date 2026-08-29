@@ -74,14 +74,13 @@ app.post("/internal/sync-notion", (c) => {
     return c.json({ error: "Unauthorized" }, 401);
   }
 
-  if (notionSyncInFlight) {
-    return c.json({ ok: false, error: "Sync already in progress" }, 409);
-  }
-
   const startedAt = Date.now();
-  const run = (notionSyncInFlight = syncNotionProducts().finally(() => {
-    notionSyncInFlight = null;
-  }));
+  // A concurrent call joins the running sync instead of starting another.
+  const run =
+    notionSyncInFlight ??
+    (notionSyncInFlight = syncNotionProducts().finally(() => {
+      notionSyncInFlight = null;
+    }));
 
   return stream(c, async (body) => {
     const heartbeat = setInterval(() => {
