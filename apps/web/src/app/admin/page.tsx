@@ -26,14 +26,21 @@ export default async function AdminPage() {
   const trpc = await getServerTrpc();
 
   try {
-    const [stats, users] = await Promise.all([
+    const [stats, users, productList, excludedProducts] = await Promise.all([
       trpc.admin.getStats.query(),
       trpc.admin.listUsers.query(),
+      trpc.admin.listProducts.query(),
+      trpc.admin.listExcludedProducts.query(),
     ]);
 
     return (
       <main className="mx-auto w-full max-w-4xl px-4 pb-16 pt-8 md:px-0">
-        <AdminDashboard stats={stats} users={users} />
+        <AdminDashboard
+          stats={stats}
+          users={users}
+          products={productList}
+          excludedProducts={excludedProducts}
+        />
       </main>
     );
   } catch (error) {

@@ -79,3 +79,48 @@ export async function syncNotionAction() {
     };
   }
 }
+
+export async function deleteProductAction(productId: string) {
+  if (!(await isAdminAuthed())) {
+    return { error: "Sessão expirada. Entre novamente." };
+  }
+
+  try {
+    const trpc = await getServerTrpc();
+    const result = await trpc.admin.deleteProduct.mutate({ productId });
+    revalidatePath("/admin");
+    revalidatePath("/");
+    return { ok: true as const, title: result.title };
+  } catch (error) {
+    return {
+      error:
+        error instanceof TRPCClientError
+          ? error.message
+          : error instanceof Error
+            ? error.message
+            : "Falha ao excluir o resumo.",
+    };
+  }
+}
+
+export async function restoreProductAction(notionPageId: string) {
+  if (!(await isAdminAuthed())) {
+    return { error: "Sessão expirada. Entre novamente." };
+  }
+
+  try {
+    const trpc = await getServerTrpc();
+    await trpc.admin.restoreProduct.mutate({ notionPageId });
+    revalidatePath("/admin");
+    return { ok: true as const };
+  } catch (error) {
+    return {
+      error:
+        error instanceof TRPCClientError
+          ? error.message
+          : error instanceof Error
+            ? error.message
+            : "Falha ao restaurar o resumo.",
+    };
+  }
+}

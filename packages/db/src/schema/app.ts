@@ -76,6 +76,18 @@ export const products = pgTable(
   ],
 );
 
+// Tombstones for resumos an admin deleted from the panel. The Notion sync
+// upserts every page in the database by `notionPageId`, so without this list a
+// deleted product would silently come back on the next cron run.
+export const productExclusions = pgTable("product_exclusion", {
+  notionPageId: text("notion_page_id").primaryKey(),
+  title: text("title").notNull(),
+  slug: text("slug").notNull(),
+  excludedAt: timestamp("excluded_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
 export const entitlements = pgTable(
   "entitlement",
   {

@@ -40,6 +40,10 @@ import {
   resetFinanceStatsAction,
   syncNotionAction,
 } from "./actions";
+import AdminProducts, {
+  type AdminExcludedItem,
+  type AdminProductItem,
+} from "./admin-products";
 
 function formatCurrency(cents: number) {
   return new Intl.NumberFormat("pt-BR", {
@@ -77,9 +81,13 @@ function getInitials(name: string) {
 export default function AdminDashboard({
   stats,
   users,
+  products,
+  excludedProducts,
 }: {
   stats: AdminStats;
   users: AdminUserListItem[];
+  products: AdminProductItem[];
+  excludedProducts: AdminExcludedItem[];
 }) {
   const [syncPending, startSync] = useTransition();
   const [logoutPending, startLogout] = useTransition();
@@ -313,6 +321,8 @@ export default function AdminDashboard({
           </Card>
         ))}
       </section>
+
+      <AdminProducts products={products} excludedProducts={excludedProducts} />
 
       <section className="space-y-3">
         <div className="flex items-baseline justify-between gap-3">

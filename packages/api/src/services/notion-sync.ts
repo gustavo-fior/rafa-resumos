@@ -1,13 +1,14 @@
 import { ensureOwnerEntitlements } from "@rafa-resumos/auth/owner-access";
 import { db } from "@rafa-resumos/db";
 import {
+  productExclusions,
   products,
   subjects,
   type ProductCategory,
   type ProductStatus,
 } from "@rafa-resumos/db/schema/app";
 import { env } from "@rafa-resumos/env/notion";
-import { and, eq, ne } from "drizzle-orm";
+import { and, eq, inArray, ne } from "drizzle-orm";
 
 import { slugify } from "../lib/slug";
 import { invalidateCatalogCache } from "./catalog";
@@ -559,10 +560,25 @@ export async function syncNotionProducts() {
     );
   });
   let syncedCount = 0;
+  let excludedCount = 0;
+
+  // Pages an admin deleted from the panel are never re-imported.
+  const excludedPageIds = new Set(
+    (
+      await db
+        .select({ notionPageId: productExclusions.notionPageId })
+        .from(productExclusions)
+    ).map((row) => row.notionPageId)
+  );
 
   logSync("info", "Resolved Notion field mapping.", fieldMap);
 
   for (const [index, page] of pages.entries()) {
+    if (excludedPageIds.has(page.id)) {
+      excludedCount += 1;
+      continue;
+    }
+
     const title = getTitle(page, fieldMap.title);
     const subjectName = getSelect(page, fieldMap.subject);
     const category = parseCategory(page, fieldMap);
@@ -701,6 +717,25 @@ export async function syncNotionProducts() {
     }
   }
 
+  // A delete that landed while this sync was running could have been undone by
+  // the upsert above; sweep anything excluded so the tombstone always wins.
+  try {
+    await db
+      .delete(products)
+      .where(
+        inArray(
+          products.notionPageId,
+          db
+            .select({ notionPageId: productExclusions.notionPageId })
+            .from(productExclusions)
+        )
+      );
+  } catch (error) {
+    logSync("warn", "Failed to sweep excluded products after sync.", {
+      error: error instanceof Error ? error.message : "unknown error",
+    });
+  }
+
   try {
     await ensureOwnerEntitlements();
   } catch (error) {
@@ -713,6 +748,7 @@ export async function syncNotionProducts() {
   invalidateCatalogCache();
 
   logSync("info", "Finished syncing Notion content.", {
+    excludedCount,
     processedPages: pages.length,
     syncedCount,
   });

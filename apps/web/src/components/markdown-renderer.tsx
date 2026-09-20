@@ -21,6 +21,10 @@ const UNDERLINE_SPAN_PATTERN =
 const COLOR_SPAN_PATTERN =
   /<span\s+color\s*=\s*["']([^"']+)["']\s*>([\s\S]*?)<\/span>/gi;
 const TOGGLE_ATTR_PATTERN = /\s*\{toggle\s*=\s*["']true["']\s*\}\s*/i;
+const HTML_TABLE_PATTERN = /<table\b([^>]*)>([\s\S]*?)<\/table>/gi;
+const TABLE_ROW_PATTERN = /<tr\b[^>]*>([\s\S]*?)<\/tr>/gi;
+const TABLE_CELL_PATTERN = /<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi;
+const COLGROUP_PATTERN = /<colgroup\b[^>]*>[\s\S]*?<\/colgroup>|<col\b[^>]*\/?>/gi;
 const NOTION_ATTR_PATTERN = /\s*\{[a-z_-]+\s*=\s*["'][^"']*["']\}/gi;
 
 const NOTION_COLORS: Record<string, string> = {
@@ -121,6 +125,71 @@ function convertToggles(content: string) {
   return result.join("\n");
 }
 
+function toTableCell(raw: string) {
+  return raw
+    .replace(/\r?\n/g, "<br>")
+    .replace(/\|/g, "\\|")
+    .trim();
+}
+
+function emphasizeCell(cell: string) {
+  if (!cell || /^\*\*[\s\S]*\*\*$/.test(cell)) return cell;
+  return `**${cell}**`;
+}
+
+/**
+ * Notion exports tables as raw `<table>` HTML. CommonMark treats `<table` as
+ * an HTML block that only ends at a blank line, so when the next heading or
+ * list follows `</table>` directly it gets swallowed into the block and shows
+ * up as plain text. Rewriting the table as a GFM pipe table sidesteps that and
+ * also lets the inline markdown inside the cells (`**bold**`, spans) render.
+ */
+function convertHtmlTables(content: string) {
+  return content.replace(
+    HTML_TABLE_PATTERN,
+    (fullMatch, attrsRaw: string, inner: string) => {
+      const attrs = parseAttrs(attrsRaw);
+      const headerRow = attrs["header-row"] === "true";
+      const headerColumn = attrs["header-column"] === "true";
+      const rows: string[][] = [];
+
+      TABLE_ROW_PATTERN.lastIndex = 0;
+      let rowMatch: RegExpExecArray | null = null;
+      const body = inner.replace(COLGROUP_PATTERN, "");
+      while ((rowMatch = TABLE_ROW_PATTERN.exec(body)) !== null) {
+        const cells: string[] = [];
+        TABLE_CELL_PATTERN.lastIndex = 0;
+        let cellMatch: RegExpExecArray | null = null;
+        while ((cellMatch = TABLE_CELL_PATTERN.exec(rowMatch[1] ?? "")) !== null) {
+          cells.push(toTableCell(cellMatch[1] ?? ""));
+        }
+        rows.push(cells);
+      }
+
+      if (rows.length === 0) return fullMatch;
+
+      const columnCount = Math.max(...rows.map((row) => row.length));
+      if (columnCount === 0) return fullMatch;
+
+      const padded = rows.map((row) => {
+        const filled = [...row];
+        while (filled.length < columnCount) filled.push("");
+        return headerColumn
+          ? filled.map((cell, index) => (index === 0 ? emphasizeCell(cell) : cell))
+          : filled;
+      });
+
+      const header = headerRow
+        ? (padded.shift() as string[])
+        : new Array<string>(columnCount).fill("");
+      const line = (cells: string[]) => `| ${cells.join(" | ")} |`;
+      const divider = `| ${new Array(columnCount).fill("---").join(" | ")} |`;
+
+      return `\n\n${[line(header), divider, ...padded.map(line)].join("\n")}\n\n`;
+    },
+  );
+}
+
 function preprocessNotionMarkdown(content: string) {
   const withConversions = content
     .replace(EMPTY_BLOCK_PATTERN, "\n\n")
@@ -131,7 +200,7 @@ function preprocessNotionMarkdown(content: string) {
       return `<span style="color:${hex}">${inner}</span>`;
     });
 
-  return convertToggles(withConversions)
+  return convertToggles(convertHtmlTables(withConversions))
     .replace(NOTION_ATTR_PATTERN, "")
     .replace(/\n{3,}/g, "\n\n");
 }
@@ -218,6 +287,17 @@ function parseMarkdownSegments(content: string): MarkdownSegment[] {
   return segments;
 }
 
+type HastNode = {
+  type: string;
+  value?: string;
+  children?: HastNode[];
+};
+
+function hastHasText(node: HastNode): boolean {
+  if (node.type === "text") return (node.value ?? "").trim().length > 0;
+  return (node.children ?? []).some(hastHasText);
+}
+
 function MarkdownBlock({ content }: { content: string }) {
   return (
     <ReactMarkdown
@@ -301,6 +381,10 @@ function MarkdownBlock({ content }: { content: string }) {
             </table>
           </div>
         ),
+        thead: ({ children, node, ...props }) => {
+          if (node && !hastHasText(node)) return null;
+          return <thead {...props}>{children}</thead>;
+        },
       }}
     >
       {content}

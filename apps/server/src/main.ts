@@ -65,7 +65,7 @@ app.post("/webhooks/abacatepay", async (c) => {
 // A full sync can take minutes (it copies Notion images to R2). The machine is
 // scale-to-zero, so the request must stay open for the whole run — Fly only
 // keeps a machine alive while it has in-flight requests — hence the heartbeat.
-let notionSyncInFlight: Promise<void> | null = null;
+let notionSyncInFlight: ReturnType<typeof syncNotionProducts> | null = null;
 
 app.post("/internal/sync-notion", (c) => {
   const authorization = c.req.header("Authorization") ?? "";
